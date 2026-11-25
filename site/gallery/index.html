@@ -4,8 +4,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Hirsel Gallery — Built on Top, in Hirsel</title>
-  <meta name="description" content="Systems and packages written in Hirsel on top of the core language: the Serve durable server platform, 62,418 lines of pure-Hirsel real-time media and WebRTC SFU networking, and the toolchain package catalog.">
+  <title>Gallery — Hirsel</title>
+  <meta name="description" content="Systems and packages built in Hirsel: the Serve durable server platform, pure-Hirsel real-time media and WebRTC networking, and hirsel.ai itself.">
   <meta name="theme-color" content="#FBF6EC">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -14,22 +14,22 @@
   <link rel="alternate" type="text/markdown" href="/llms.txt">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Hirsel">
-  <meta property="og:title" content="Hirsel Gallery — Built on Top, in Hirsel">
-  <meta property="og:description" content="Ordinary packages written in Hirsel itself: the Serve server platform, 62,418 LOC pure-Hirsel real-time media and WebRTC SFU stack, and toolchain package catalog.">
+  <meta property="og:title" content="Gallery — Hirsel">
+  <meta property="og:description" content="Systems and packages built in Hirsel: the Serve durable server platform, pure-Hirsel real-time media and WebRTC networking, and hirsel.ai itself.">
   <meta property="og:url" content="https://hirsel.ai/gallery/">
   <meta property="og:image" content="https://hirsel.ai/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Hirsel Gallery — Built on Top, in Hirsel">
-  <meta name="twitter:description" content="Ordinary packages written in Hirsel itself: the Serve server platform, 62,418 LOC pure-Hirsel real-time media and WebRTC SFU stack, and toolchain package catalog.">
+  <meta name="twitter:title" content="Gallery — Hirsel">
+  <meta name="twitter:description" content="Systems and packages built in Hirsel: the Serve durable server platform, pure-Hirsel real-time media and WebRTC networking, and hirsel.ai itself.">
   <meta name="twitter:image" content="https://hirsel.ai/og-image.png">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    "name": "Hirsel Gallery — Built on Top, in Hirsel",
-    "description": "Systems and packages written in Hirsel on top of the core language: the Serve durable server platform, 62,418 lines of pure-Hirsel real-time media and WebRTC SFU networking, and the toolchain package catalog.",
+    "name": "Gallery — Hirsel",
+    "description": "Systems and packages built in Hirsel: the Serve durable server platform, pure-Hirsel real-time media and WebRTC networking, and hirsel.ai itself.",
     "url": "https://hirsel.ai/gallery/",
     "inLanguage": "en",
     "isPartOf": {
@@ -46,11 +46,11 @@
 @font-face{font-family:'Archivo Black';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/archivo-black-latin.woff2) format('woff2')}
 @font-face{font-family:'Inter';font-style:normal;font-weight:400 600;font-display:swap;src:url(/fonts/inter-latin.woff2) format('woff2')}
 :root{
-  --ink:#11110F;--body:#2B2A26;--cream:#FBF6EC;--paper:#F4EDE0;--ground:#ECE3CF;
-  --red:#CB271F;--red-soft:rgba(203,39,31,.08);--mute:#5E5A50;
+  --ink:#11110F;--body:#2B2A26;--cream:#FBF6EC;--paper:#F4EDE0;
+  --red:#CB271F;--mute:#5E5A50;
   --rule:rgba(17,17,15,.14);--rule-strong:rgba(17,17,15,.26);
-  --umber:#80552A;--moss:#4F6A2E;
-  --ease:cubic-bezier(.16,1,.3,1);--t-press:110ms;--t-state:220ms;
+  --umber:#80552A;
+  --ease:cubic-bezier(.16,1,.3,1);--t-state:220ms;
   --top:58px;
   --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"DejaVu Sans Mono","Liberation Mono",monospace;
   --display:"Archivo Black","Arial Black",Inter,system-ui,sans-serif;
@@ -58,30 +58,24 @@
 }
 ::selection{background:rgba(203,39,31,.16);color:var(--ink)}
 *{box-sizing:border-box}
-[hidden]{display:none!important}
 html{scroll-behavior:smooth;background:var(--cream);color:var(--ink);-webkit-text-size-adjust:100%}
 body{margin:0;min-height:100vh;background:var(--cream);color:var(--body);font:400 16px/1.64 var(--sans);font-kerning:normal;-webkit-font-smoothing:antialiased}
 a{color:inherit}
-button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 :focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .wmfont{font-family:var(--display);font-weight:400;font-synthesis:none;letter-spacing:-.035em}
 
-/* Shared sticky top bar */
 header.top{
   position:sticky;top:0;z-index:30;height:var(--top);
-  display:flex;align-items:center;gap:20px;
-  padding:0 24px;
+  display:flex;align-items:center;gap:24px;
+  padding:0 32px;
   background:rgba(251,246,236,.92);
   -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--rule);
 }
-header.top .brand{
-  display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);flex:none;
-}
+header.top .brand{display:inline-flex;align-items:center;gap:9px;text-decoration:none;color:var(--ink);flex:none}
 header.top .brand .mark{width:24px;height:24px;display:block;flex:none}
 header.top .brand .wm{font-size:20px;line-height:1}
-header.top .nav{display:flex;align-items:center;gap:20px;min-width:0;overflow-x:auto;scrollbar-width:none}
-header.top .nav::-webkit-scrollbar{display:none}
+header.top .nav{margin-left:auto;display:flex;align-items:center;gap:22px;min-width:0}
 header.top .nav a{
   position:relative;font-size:14px;font-weight:500;color:var(--mute);text-decoration:none;
   padding:5px 0 6px;white-space:nowrap;transition:color var(--t-state) var(--ease);flex:none;
@@ -94,169 +88,65 @@ header.top .nav a:hover,header.top .nav a:focus-visible{color:var(--ink)}
 header.top .nav a:hover::after,header.top .nav a:focus-visible::after{transform:scaleX(1)}
 header.top .nav a[aria-current="page"]{color:var(--ink)}
 header.top .nav a[aria-current="page"]::after{transform:scaleX(1);opacity:1;background:var(--red)}
-header.top .right{margin-left:auto;display:flex;align-items:center;gap:10px;flex:none}
-.pill-copy{
-  position:relative;display:inline-flex;align-items:center;gap:6px;
-  font-size:13px;font-weight:500;line-height:1;color:var(--mute);
-  padding:6px 11px;border:1px solid var(--rule);border-radius:999px;white-space:nowrap;
-  transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease),background-color var(--t-state) var(--ease),transform var(--t-press) var(--ease);
-}
-.pill-copy:hover,.pill-copy:focus-visible{color:var(--ink);border-color:var(--rule-strong);background:rgba(17,17,15,.035)}
-.pill-copy:active{transform:scale(.97)}
-.pill-copy.ok{color:var(--ink);border-color:var(--ink)}
-.pill-copy svg{width:13px;height:13px;flex:none}
-.pill-copy .ic-ok,.pill-copy.ok .ic-copy{display:none}
-.pill-copy.ok .ic-ok{display:block}
-.pill-copy .lbl{display:grid;text-align:left}
-.pill-copy .lbl span{grid-area:1/1;transition:opacity var(--t-press) var(--ease)}
-.pill-copy .lbl .done,.pill-copy.ok .lbl .idle{opacity:0}
-.pill-copy.ok .lbl .done{opacity:1}
-header.top .gh{
-  display:inline-flex;align-items:center;justify-content:center;
-  width:34px;height:34px;margin-right:-6px;border-radius:50%;color:var(--ink);opacity:.82;
-  transition:opacity var(--t-state) var(--ease),background-color var(--t-state) var(--ease);
-}
-header.top .gh:hover,header.top .gh:focus-visible{opacity:1;background:rgba(17,17,15,.06)}
-header.top .gh svg{width:19px;height:19px;display:block}
 
-/* Main editorial column */
-main.gallery{max-width:1120px;margin:0 auto;padding:38px 36px 88px}
-.hero-doc{
-  position:relative;overflow:hidden;
-  padding:0 0 26px;margin-bottom:28px;border-bottom:1px solid var(--rule);
-}
-.hero-doc .topo{
-  position:absolute;right:-16px;top:-12px;width:280px;height:auto;
-  color:rgba(17,17,15,.08);pointer-events:none;
-}
-.eyebrow{
-  display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;
-  font:500 12px/1 var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--mute);
-}
-.eyebrow .pip{width:7px;height:7px;border-radius:50%;background:var(--red);flex:none}
+main.gallery{max-width:780px;margin:0 auto;padding:48px 28px 88px}
+.hero-doc{padding:0 0 28px;margin-bottom:40px;border-bottom:1px solid var(--rule)}
 .hero-doc h1{
   margin:0 0 12px;font-family:var(--display);font-weight:400;font-synthesis:none;
-  font-size:clamp(30px,4.4vw,44px);line-height:1.06;letter-spacing:-.03em;color:var(--ink);
-  max-width:22ch;
+  font-size:clamp(34px,5vw,48px);line-height:1.02;letter-spacing:-.03em;color:var(--ink);
 }
-.hero-doc .lead{margin:0;font-size:17px;line-height:1.58;color:var(--body);max-width:64ch;text-wrap:pretty}
+.hero-doc .lead{margin:0;font-size:17px;line-height:1.58;color:var(--body);max-width:58ch;text-wrap:pretty}
 
-/* Summary stats */
-.kpi-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0 0 36px}
-.kpi{
-  padding:18px 20px;border-radius:12px;background:var(--paper);border:1px solid var(--rule);
-  display:flex;flex-direction:column;gap:6px;
-}
-.kpi .k-label{font:600 11.5px/1.2 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
-.kpi .k-val{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.06;letter-spacing:-.03em;color:var(--ink)}
-.kpi .k-val.good{color:var(--moss)}
-.kpi .k-sub{font-size:13.5px;line-height:1.45;color:var(--mute)}
-
-/* Showcase sections — structured so live interactive demos can slot directly above #built-on-top */
-.gal-section{margin:44px 0 0;scroll-margin-top:76px}
-.gal-section.first{margin-top:0}
-.gal-section h2{
-  margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--rule);
-  font-family:var(--display);font-weight:400;font-synthesis:none;
+.entry{margin:0 0 44px;padding-bottom:40px;border-bottom:1px solid var(--rule);scroll-margin-top:78px}
+.entry:last-of-type{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.entry-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.entry h2{
+  margin:0;font-family:var(--display);font-weight:400;font-synthesis:none;
   font-size:24px;line-height:1.18;letter-spacing:-.022em;color:var(--ink);
 }
-.gal-section .sec-lead{margin:0 0 22px;max-width:74ch;font-size:15.5px;line-height:1.62;color:var(--body);text-wrap:pretty}
-
-.stack-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
-.card{
-  display:flex;flex-direction:column;gap:12px;padding:24px 26px;border-radius:14px;
-  background:var(--paper);border:1px solid var(--rule-strong);border-top:3px solid var(--ink);
-  scroll-margin-top:78px;
-}
-.card.featured{background:var(--cream)}
-.card-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.card h3{
-  margin:0;font-family:var(--display);font-weight:400;font-synthesis:none;
-  font-size:21px;line-height:1.18;letter-spacing:-.02em;color:var(--ink);
-}
-.card-tag{
-  font:500 11.5px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;
-  color:var(--mute);padding:4px 8px;border-radius:999px;background:rgba(17,17,15,.06);
-}
-.card-tag.pure{background:rgba(79,106,46,.12);color:var(--moss)}
-.card p{margin:0;font-size:15px;line-height:1.6;color:var(--body);text-wrap:pretty}
-.card ul{margin:0;padding-left:19px;font-size:14.5px;line-height:1.58;color:var(--body)}
-.card li{margin:0 0 7px}
-.card li:last-child{margin-bottom:0}
-.card code,.tier code,.site-note code{
-  font-family:var(--mono);font-size:.86em;background:rgba(17,17,15,.06);
+.entry .kicker{font:500 12px/1 var(--mono);color:var(--mute)}
+.entry p{margin:0 0 14px;font-size:15.5px;line-height:1.62;color:var(--body);text-wrap:pretty}
+.entry ul{margin:0 0 16px;padding-left:20px;font-size:15px;line-height:1.6;color:var(--body)}
+.entry li{margin:0 0 8px}
+.entry li:last-child{margin-bottom:0}
+.entry strong{font-weight:600;color:var(--ink)}
+.entry code{
+  font-family:var(--mono);font-size:.86em;background:rgba(17,17,15,.055);
   border:1px solid rgba(17,17,15,.08);padding:.08em .34em;border-radius:4px;color:var(--ink);
 }
-.card .note{
-  padding:10px 13px;border-radius:8px;background:rgba(17,17,15,.04);
-  border-left:3px solid var(--umber);font-size:13.5px;line-height:1.54;color:var(--body);
+.note{
+  margin:14px 0 16px;padding:11px 14px;border-radius:8px;
+  background:var(--paper);border-left:3px solid var(--rule-strong);
+  font-size:14px;line-height:1.56;color:var(--body);
 }
-.card .note.neutral{border-left-color:var(--rule-strong)}
-.card-foot{
-  margin-top:auto;padding-top:12px;border-top:1px solid var(--rule);
-  display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;font-size:13.5px;font-weight:500;
-}
-.card-link{
-  color:var(--ink);text-decoration:none;border-bottom:1.5px solid rgba(203,39,31,.45);
+.note.ffi{border-left-color:var(--umber)}
+.links{display:flex;align-items:center;flex-wrap:wrap;gap:10px 18px;font-size:14px;font-weight:500}
+.links a{
+  color:var(--ink);text-decoration:none;border-bottom:1.5px solid rgba(203,39,31,.4);
   padding-bottom:1px;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease);
 }
-.card-link:hover,.card-link:focus-visible{color:var(--red);border-bottom-color:var(--red)}
+.links a:hover,.links a:focus-visible{color:var(--red);border-bottom-color:var(--red)}
 
-/* Package tiers */
-.tier-grid{display:grid;grid-template-columns:1fr;gap:14px}
-.tier{
-  padding:18px 20px;border-radius:12px;background:var(--paper);border:1px solid var(--rule);
-}
-.tier-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px}
-.tier h3{margin:0;font:600 15.5px/1.3 var(--sans);color:var(--ink)}
-.tier .meta{font:500 12px/1.3 var(--mono);color:var(--mute)}
-.tier p{margin:0 0 10px;font-size:14px;line-height:1.54;color:var(--body);max-width:78ch}
-.pkg-list{display:flex;flex-wrap:wrap;gap:6px}
-.pkg-chip{
-  font:500 12.5px/1.2 var(--mono);padding:4px 9px;border-radius:6px;
-  background:var(--cream);border:1px solid var(--rule);color:var(--ink);
-}
-.pkg-chip.bundle{background:var(--ground);border-color:var(--rule-strong)}
-.pkg-chip.ffi{background:rgba(128,85,42,.1);border-color:rgba(128,85,42,.28);color:var(--umber)}
-
-/* Production host note */
-.site-note{
-  padding:18px 20px;border-radius:12px;background:var(--paper);
-  border:1px solid var(--rule);border-left:3px solid var(--ink);
-}
-.site-note h3{margin:0 0 6px;font:600 15.5px/1.3 var(--sans);color:var(--ink)}
-.site-note p{margin:0;font-size:14.5px;line-height:1.58;color:var(--body);max-width:78ch}
-
-/* Footer */
 .gal-foot{
-  margin-top:44px;padding-top:18px;border-top:1px solid var(--rule);
+  margin-top:52px;padding-top:18px;border-top:1px solid var(--rule);
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;
   font-size:13px;color:var(--mute);
 }
 .gal-foot a{color:var(--mute);text-decoration:none;border-bottom:1px solid var(--rule)}
 .gal-foot a:hover,.gal-foot a:focus-visible{color:var(--ink);border-bottom-color:var(--ink)}
 
-@media (max-width:960px){
-  main.gallery{padding:28px 20px 72px}
-  .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .stack-grid{grid-template-columns:1fr}
-}
 @media (max-width:640px){
-  header.top{padding:0 12px;gap:10px}
-  header.top .brand{gap:6px}
+  header.top{padding:0 16px;gap:12px}
   header.top .brand .wm{font-size:18px}
-  header.top .nav{gap:12px}
-  header.top .nav a{font-size:13px}
-  header.top .nav .hide-sm{display:none}
-  .pill-copy .lbl{display:none}
-  .pill-copy{padding:7px 9px}
-  main.gallery{padding:22px 14px 60px}
-  .kpi-grid{grid-template-columns:1fr}
-  .card{padding:18px 18px}
+  header.top .nav{gap:14px}
+  header.top .nav a{font-size:13.5px}
+  main.gallery{padding:32px 18px 64px}
+  .hero-doc{margin-bottom:32px;padding-bottom:22px}
+  .entry{margin-bottom:34px;padding-bottom:32px}
 }
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
-  .pill-copy,header.top .nav a::after,.card-link{transition:none}
+  header.top .nav a::after,.links a{transition:none}
 }
 </style>
 </head>
@@ -264,212 +154,76 @@ main.gallery{max-width:1120px;margin:0 auto;padding:38px 36px 88px}
 <header class="top">
   <a class="brand" href="/" aria-label="Hirsel home"><svg class="mark" viewBox="0 0 512 512" width="24" height="24" aria-hidden="true"><rect width="512" height="512" rx="96" fill="#CB271F"/><path d="M96.91,16.08 Q95.84,15.44 94.76,16.07 L27.58,55.01 Q26.50,55.64 26.50,56.89 L26.50,122.73 Q26.50,123.98 27.54,124.67 L63.64,148.42 Q64.69,149.11 64.69,150.36 L64.69,204.13 Q64.69,205.38 65.76,206.02 L80.69,214.80 Q81.77,215.44 83.00,215.23 L86.57,214.64 Q87.80,214.43 87.84,213.18 L88.77,183.52 Q88.81,182.27 90.04,182.45 L94.60,183.10 Q95.84,183.27 96.88,183.97 L112.89,194.64 Q113.93,195.33 113.93,196.58 L113.93,231.27 Q113.93,232.52 114.97,233.21 L125.03,239.92 Q125.99,240.56 127.15,240.56 L129.86,240.56 Q131.01,240.56 131.96,239.90 L140.04,234.24 Q141.06,233.52 141.06,232.27 L141.06,200.61 Q141.06,199.36 142.15,198.74 L200.64,165.60 Q201.36,165.19 202.06,165.65 L203.69,166.73 Q204.38,167.19 204.38,168.03 L204.38,202.13 Q204.38,203.38 205.54,203.84 L208.25,204.92 Q209.40,205.38 210.51,204.81 L227.39,195.92 Q228.50,195.33 228.52,194.09 L229.48,135.28 Q229.50,134.03 228.44,133.38 L186.27,107.50 Q185.28,106.89 184.13,106.89 L181.42,106.89 Q180.26,106.89 179.26,107.47 L116.02,143.46 Q114.94,144.08 113.88,143.41 L63.38,111.36 Q62.67,110.92 62.21,110.22 L61.13,108.59 Q60.66,107.90 60.69,107.07 L61.64,71.96 Q61.67,70.72 62.73,70.06 L94.78,50.27 Q95.84,49.61 96.93,50.22 L119.87,63.07 Q120.96,63.68 120.96,64.93 L120.96,80.52 Q120.96,81.77 119.92,82.46 L106.71,91.28 Q105.89,91.82 105.20,91.13 L103.57,89.50 Q102.88,88.81 102.88,87.82 L102.88,76.90 Q102.88,75.74 101.95,75.05 L99.78,73.42 Q98.85,72.73 97.72,72.95 L94.99,73.50 Q93.83,73.73 92.84,74.36 L83.83,80.09 Q82.78,80.77 82.83,82.01 L83.72,101.63 Q83.78,102.88 84.84,103.54 L101.90,114.32 Q102.88,114.94 104.03,114.94 L106.74,114.94 Q107.90,114.94 108.89,114.34 L145.02,92.47 Q146.09,91.82 146.09,90.57 L146.09,46.84 Q146.09,45.59 145.02,44.95 L96.91,16.08 Z" transform="translate(50 44) scale(1.609375)" fill="#FBF6EC"/></svg><span class="wm wmfont">hirsel</span></a>
   <nav class="nav" aria-label="Site">
-    <a href="/" class="hide-sm">Home</a>
+    <a href="/">Home</a>
     <a href="/docs/">Docs</a>
     <a href="/gallery/" aria-current="page">Gallery</a>
-    <a href="/benchmarks/">Benchmarks</a>
-    <a href="https://github.com/SamGalanakis/hirsel" class="hide-sm">GitHub</a>
+    <a href="https://github.com/SamGalanakis/hirsel">GitHub</a>
   </nav>
-  <div class="right">
-    <button class="pill-copy" id="copyAgent" type="button" title="Copy Hirsel docs and install links for coding agents" aria-live="polite"><svg class="ic-copy" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"/></svg><svg class="ic-ok" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.4 6.5 11.7 12.8 4.8"/></svg><span class="lbl"><span class="idle">Copy for agents</span><span class="done" aria-hidden="true">Copied</span></span></button>
-    <a class="gh" href="https://github.com/SamGalanakis/hirsel" aria-label="Source on GitHub" title="Source on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
-  </div>
 </header>
 
 <main class="gallery">
   <div class="hero-doc">
-    <svg class="topo" viewBox="0 0 320 110" aria-hidden="true" fill="none"><path d="M12 104C68 82 114 34 192 26c56-6 92 14 126 30" stroke="currentColor" stroke-width="1"/><path d="M38 106C94 84 134 48 206 42c48-4 82 12 112 28" stroke="currentColor" stroke-width="1"/><path d="M72 108C124 88 158 62 222 58c40-2 68 10 96 26" stroke="currentColor" stroke-width="1"/><path d="M114 108C158 92 186 76 238 74c30-1 54 9 80 22" stroke="currentColor" stroke-width="1"/></svg>
-    <p class="eyebrow"><span class="pip" aria-hidden="true"></span>Gallery · Built in Hirsel</p>
-    <h1>Built on top, in Hirsel</h1>
-    <p class="lead">These systems are not compiler magic or runtime primitives — they are ordinary Hirsel packages written in Hirsel itself on top of the core language, explicit capabilities, and byte and step budgets.</p>
+    <h1>Gallery</h1>
+    <p class="lead">Ordinary packages and services written in Hirsel itself — built on the core language, explicit capabilities, and bounded resources.</p>
   </div>
 
-  <section class="kpi-grid" aria-label="Stack summary">
-    <div class="kpi">
-      <span class="k-label">Pure Hirsel media &amp; transport</span>
-      <span class="k-val good">62,418 LOC</span>
-      <span class="k-sub">11 packages, zero <code>Foreign</code> FFI — fully covered by <code>hirsel test --sim</code> and replay</span>
+  <section class="entry" id="serve">
+    <div class="entry-head">
+      <h2>Serve</h2>
+      <span class="kicker">store &middot; runner &middot; platform</span>
     </div>
-    <div class="kpi">
-      <span class="k-label">Toolchain package bundle</span>
-      <span class="k-val">17 packages</span>
-      <span class="k-sub">Shipped in the release bundle and bound by <code>major = 1</code></span>
-    </div>
-    <div class="kpi">
-      <span class="k-label">Core runtime guarantees</span>
-      <span class="k-val">0 GC pauses</span>
-      <span class="k-sub">Value ownership, explicit capability grants, and deterministic recorded replay</span>
-    </div>
-  </section>
-
-  <section class="gal-section first" id="built-on-top" aria-labelledby="stacks-heading">
-    <h2 id="stacks-heading">Production stacks written in Hirsel</h2>
-    <p class="sec-lead">Every package below compiles with the standard Hirsel toolchain, declares its host capabilities as ordinary parameters, and runs under deterministic simulation without modifying application code.</p>
-
-    <div class="stack-grid">
-      <article class="card featured" id="serve">
-        <div class="card-top">
-          <h3>Serve &mdash; the durable server platform</h3>
-          <span class="card-tag">store &middot; runner &middot; platform</span>
-        </div>
-        <p>A batteries-included durable server stack composed of <code>store</code>, <code>runner</code>, <code>platform</code>, HTTP/1.1 (<code>std.http</code>), WebSocket (<code>std.ws</code>), and the <code>hirsel host</code>, <code>hirsel deploy</code>, <code>hirsel dev</code>, and <code>hirsel sdk ts</code> CLI commands.</p>
-        <ul>
-          <li><strong>Durable storage:</strong> copy-on-write B+tree with checksummed journal, concurrent snapshot readers, and single-writer total order (by design, like SQLite WAL), plus Tiered larger-than-RAM storage, S3/Tigris Bucket backing with fencing, and read followers.</li>
-          <li><strong>Rich indexing &amp; projections:</strong> secondary, unique, and aggregate indexes; IVF-RaBitQ approximate + exact vector search with prefilters (<code>vector</code>); exact-fraction hybrid RRF (<code>hybrid</code>); BM25 full-text (<code>search</code>); Hilbert-spatial (<code>spatial</code>); row TTL expiry; and incremental projections.</li>
-          <li><strong>Migrations &amp; live sync:</strong> transactional <code>Migrate</code> and <code>preview_migration</code> (<code>hirsel dry-run</code>); live diff subscriptions; typed <code>Rooms</code>.</li>
-          <li><strong>TypeScript SDK:</strong> <code>hirsel sdk ts</code> generates typed clients with reconnect recovery and optimistic writes.</li>
-        </ul>
-        <p class="note neutral"><strong>One Place = one fenced single-writer authority</strong> (no in-Place multi-master/Raft clustering by design — scale out across Places, persist durably to S3/Tigris); failed deploys abort automatically before cutover, while post-cutover rollback across a schema migration uses <code>hirsel store restore</code>.</p>
-        <div class="card-foot">
-          <a class="card-link" href="/docs/#4-store-typed-table-secondary-index-and-transactions">Cookbook &sect;4: Store &rarr;</a>
-          <a class="card-link" href="/docs/spec/http/">HTTP spec</a>
-          <a class="card-link" href="/docs/spec/launch/">Launch &amp; deploy spec</a>
-        </div>
-      </article>
-
-      <article class="card featured" id="media">
-        <div class="card-top">
-          <h3>Real-time media &amp; networking in pure Hirsel</h3>
-          <span class="card-tag pure">62,418 LOC &middot; zero FFI</span>
-        </div>
-        <p>A complete real-time media and transport stack written in <strong>62,418 lines of pure Hirsel</strong> across 11 packages with zero <code>Foreign</code> code, so <code>hirsel test --sim</code> and recorded replay cover it end to end:</p>
-        <ul>
-          <li><strong>Transport &amp; security:</strong> DTLS 1.2 (<code>dtls</code>), SRTP/SRTCP (<code>srtp</code>), RTP/RTCP with RTX, BWE, and pacing (<code>rtp</code>), jitter buffer (<code>rtp_jitter</code>), STUN/ICE-lite (<code>stun_ice</code>), TURN client &amp; relay (<code>turn</code>), and RFC 9605 SFrame E2EE (<code>sframe</code>).</li>
-          <li><strong>WebRTC SFU &amp; containers:</strong> <code>webrtc_sfu</code> (simulcast, VP9/AV1 SVC, dynacast, Opus RED, E2EE clear-range routing), codec bitstream parsers (<code>media_bits</code>), Ogg/MP4/WebM containers (<code>media_container</code>), and room recording (<code>media_record</code>).</li>
-        </ul>
-        <p class="note"><strong>Thin C FFI wrappers:</strong> <code>opus</code>, <code>av1</code>, <code>h264</code>, <code>image_jpeg</code>, and <code>image_webp</code> are thin C FFI wrappers behind <code>Foreign</code> (trusted native code). They sit outside the 62,418-line pure-Hirsel transport and SFU stack above.</p>
-        <div class="card-foot">
-          <a class="card-link" href="/docs/spec/webrtc/">WebRTC SFU spec</a>
-          <a class="card-link" href="/docs/spec/dtls/">DTLS &amp; SRTP spec</a>
-          <a class="card-link" href="/docs/spec/rtp/">RTP spec</a>
-          <a class="card-link" href="/docs/spec/turn/">TURN spec</a>
-          <a class="card-link" href="/docs/spec/sframe/">SFrame spec</a>
-        </div>
-      </article>
+    <p>A durable server platform written in Hirsel, combining storage, HTTP/1.1, WebSockets, live rooms, and deployment tooling.</p>
+    <ul>
+      <li><strong>Storage:</strong> copy-on-write B+tree with checksummed journal, concurrent snapshot readers, and single-writer total order by design (like SQLite WAL), plus tiered larger-than-RAM storage, S3/Tigris backing with fencing, and read followers.</li>
+      <li><strong>Indexing &amp; search:</strong> secondary, unique, and aggregate indexes, vector search, full-text BM25, spatial indexes, row TTL expiry, and incremental projections.</li>
+      <li><strong>Migrations &amp; live sync:</strong> transactional migrations with dry-run previews (<code>hirsel dry-run</code>), live diff subscriptions, and typed rooms.</li>
+      <li><strong>Clients &amp; CLI:</strong> <code>hirsel sdk ts</code> generates typed TypeScript clients with reconnect recovery; <code>hirsel dev</code>, <code>hirsel deploy</code>, and <code>hirsel host</code> manage the lifecycle.</li>
+    </ul>
+    <p class="note"><strong>One Place = one fenced single-writer authority</strong> by design — scale out across Places and persist durably to S3/Tigris. Failed deploys abort automatically before cutover; post-cutover schema rollback uses <code>hirsel store restore</code>.</p>
+    <div class="links">
+      <a href="/docs/#4-store-typed-table-secondary-index-and-transactions">Store in the cookbook &rarr;</a>
+      <a href="/docs/spec/http/">HTTP spec</a>
+      <a href="/docs/spec/launch/">Launch spec</a>
     </div>
   </section>
 
-  <section class="gal-section" id="packages" aria-labelledby="packages-heading">
-    <h2 id="packages-heading">Package catalog &amp; trust boundaries</h2>
-    <p class="sec-lead">Every pure-Hirsel package keeps Hirsel's memory-safety, budget, and determinism guarantees intact. Native C codecs are isolated in thin <code>Foreign</code> wrapper packages and called only when explicitly granted.</p>
-
-    <div class="tier-grid">
-      <div class="tier">
-        <div class="tier-head">
-          <h3>Shipped in the toolchain bundle</h3>
-          <span class="meta">17 packages · bind by major = 1 · tools/buck2/defs.bzl</span>
-        </div>
-        <div class="pkg-list">
-          <span class="pkg-chip bundle">std</span>
-          <span class="pkg-chip bundle">store</span>
-          <span class="pkg-chip bundle">runner</span>
-          <span class="pkg-chip bundle">platform</span>
-          <span class="pkg-chip bundle">search</span>
-          <span class="pkg-chip bundle">mcp</span>
-          <span class="pkg-chip bundle">webrtc_sfu</span>
-          <span class="pkg-chip bundle">dtls</span>
-          <span class="pkg-chip bundle">srtp</span>
-          <span class="pkg-chip bundle">rtp</span>
-          <span class="pkg-chip bundle">rtp_jitter</span>
-          <span class="pkg-chip bundle">turn</span>
-          <span class="pkg-chip bundle">stun_ice</span>
-          <span class="pkg-chip bundle">sframe</span>
-          <span class="pkg-chip bundle">media_bits</span>
-          <span class="pkg-chip bundle">media_container</span>
-          <span class="pkg-chip bundle">media_record</span>
-        </div>
-      </div>
-
-      <div class="tier">
-        <div class="tier-head">
-          <h3>Additional in-repo packages</h3>
-          <span class="meta">core/programs/ · bind by path</span>
-        </div>
-        <div class="pkg-list">
-          <span class="pkg-chip">vector</span>
-          <span class="pkg-chip">spatial</span>
-          <span class="pkg-chip">video_packager</span>
-          <span class="pkg-chip">image_core</span>
-          <span class="pkg-chip">postgres</span>
-          <span class="pkg-chip">jwtbind</span>
-          <span class="pkg-chip">toml</span>
-          <span class="pkg-chip">yaml</span>
-          <span class="pkg-chip">archive</span>
-          <span class="pkg-chip">tz</span>
-          <span class="pkg-chip">xml</span>
-        </div>
-      </div>
-
-      <div class="tier">
-        <div class="tier-head">
-          <h3>Thin C FFI wrappers (trusted native code)</h3>
-          <span class="meta">behind Foreign · excluded from deterministic replay</span>
-        </div>
-        <p>Codec implementations wrap established native libraries behind explicit <code>Foreign</code> capability parameters so safety and determinism boundaries remain explicit in every signature (<a class="card-link" href="/docs/spec/foreign/">Foreign spec</a>).</p>
-        <div class="pkg-list">
-          <span class="pkg-chip ffi">opus</span>
-          <span class="pkg-chip ffi">av1</span>
-          <span class="pkg-chip ffi">h264</span>
-          <span class="pkg-chip ffi">image_jpeg</span>
-          <span class="pkg-chip ffi">image_webp</span>
-        </div>
-      </div>
+  <section class="entry" id="media">
+    <div class="entry-head">
+      <h2>Real-time media &amp; WebRTC</h2>
+      <span class="kicker">pure Hirsel transport &amp; SFU</span>
+    </div>
+    <p>Real-time audio, video, and transport packages written in pure Hirsel with no <code>Foreign</code> code, so <code>hirsel test --sim</code> and recorded replay cover them end to end.</p>
+    <ul>
+      <li><strong>Transport &amp; security:</strong> DTLS 1.2 (<code>dtls</code>), SRTP/SRTCP (<code>srtp</code>), RTP/RTCP with RTX, pacing, and bandwidth estimation (<code>rtp</code>), jitter buffer (<code>rtp_jitter</code>), STUN/ICE-lite (<code>stun_ice</code>), TURN client and relay (<code>turn</code>), and SFrame E2EE (<code>sframe</code>).</li>
+      <li><strong>SFU &amp; containers:</strong> WebRTC SFU with simulcast and SVC (<code>webrtc_sfu</code>), bitstream parsers (<code>media_bits</code>), Ogg/MP4/WebM containers (<code>media_container</code>), and room recording (<code>media_record</code>).</li>
+    </ul>
+    <p class="note ffi"><strong>Codecs wrap C libraries:</strong> <code>opus</code>, <code>av1</code>, <code>h264</code>, <code>image_jpeg</code>, and <code>image_webp</code> are thin C FFI wrappers behind explicit <code>Foreign</code> capability parameters, separate from the pure-Hirsel transport and SFU packages above.</p>
+    <div class="links">
+      <a href="/docs/spec/webrtc/">WebRTC spec</a>
+      <a href="/docs/spec/dtls/">DTLS &amp; SRTP</a>
+      <a href="/docs/spec/rtp/">RTP</a>
+      <a href="/docs/spec/turn/">TURN</a>
+      <a href="/docs/spec/sframe/">SFrame</a>
+      <a href="/docs/spec/foreign/">Foreign spec</a>
     </div>
   </section>
 
-  <section class="gal-section" id="this-site" aria-labelledby="site-heading">
-    <h2 id="site-heading">Serving hirsel.ai itself</h2>
-    <div class="site-note">
-      <h3>Dogfooded HTTP/1.1 static asset server</h3>
-      <p>This website is served in production by a native Hirsel executable built on <code>std.http</code>, <code>std.router</code>, <code>std.dir</code>, and <code>std.file</code>. At startup it walks its granted <code>_site</code> directory once without following symlinks, loads assets into memory, and enforces <code>_headers</code> rules under explicit <code>hirsel.toml</code> grants (<code>Net=Listen</code>, <code>_site</code>, <code>Clock</code>, <code>Tasks</code>, <code>Process</code>, <code>Stderr</code>).</p>
+  <section class="entry" id="this-site">
+    <div class="entry-head">
+      <h2>hirsel.ai</h2>
+      <span class="kicker">std.http &middot; std.router</span>
     </div>
+    <p>This website is served in production by a native Hirsel executable built on <code>std.http</code>, <code>std.router</code>, <code>std.dir</code>, and <code>std.file</code>.</p>
+    <ul>
+      <li>Walks its granted <code>_site</code> directory once at startup without following symlinks and serves assets directly from memory.</li>
+      <li>Runs with only the capabilities declared in <code>hirsel.toml</code>: <code>Net=Listen</code>, <code>_site</code>, <code>Clock</code>, <code>Tasks</code>, <code>Process</code>, and <code>Stderr</code>.</li>
+    </ul>
   </section>
 
   <footer class="gal-foot">
-    <span>Hirsel · Built on top, in Hirsel · Explicit capabilities &amp; honest FFI boundaries</span>
-    <span><a href="/">Home</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/docs/spec/">Spec</a> &middot; <a href="/benchmarks/">Benchmarks</a> &middot; <a href="https://github.com/SamGalanakis/hirsel">GitHub</a></span>
+    <span>Hirsel</span>
+    <span><a href="/">Home</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/docs/spec/">Spec</a> &middot; <a href="https://github.com/SamGalanakis/hirsel">GitHub</a></span>
   </footer>
 </main>
-
-<script>
-const AGENT_TXT = [
-  'Hirsel docs and install for coding agents:',
-  'Authority rule: Always run `hirsel primer` from your installed binary as the exact authority for your installed version.',
-  '- Index: https://hirsel.ai/llms.txt',
-  '- Full single-file bundle: https://hirsel.ai/llms-full.txt',
-  '- Primer (whole language in one page): https://hirsel.ai/primer.md',
-  '- Cookbook (tested recipes): https://hirsel.ai/cookbook.md',
-  '- Standard library index: https://hirsel.ai/api-index.md',
-  '- Specification reference: https://hirsel.ai/docs/spec/',
-  '- Gallery: https://hirsel.ai/gallery/',
-  '- Benchmarks: https://hirsel.ai/benchmarks/',
-  '- Agent skill: https://github.com/SamGalanakis/hirsel/blob/main/skills/hirsel/SKILL.md',
-  '- Install (Linux x86_64, glibc 2.28+; Apple Silicon macOS in progress): curl -fsSL https://hirsel.ai/install.sh | sh',
-].join('\n');
-
-const copyAgent = document.getElementById('copyAgent');
-if (copyAgent) {
-  let timer = 0;
-  copyAgent.addEventListener('click', () => {
-    const done = () => {
-      copyAgent.classList.add('ok');
-      clearTimeout(timer);
-      timer = setTimeout(() => copyAgent.classList.remove('ok'), 1800);
-    };
-    const fallback = () => {
-      const t = document.createElement('textarea');
-      t.value = AGENT_TXT;
-      t.setAttribute('readonly', '');
-      t.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
-      document.body.append(t);
-      t.select();
-      try { if (document.execCommand('copy')) done(); } finally { t.remove(); }
-    };
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(AGENT_TXT).then(done, fallback);
-    } else fallback();
-  });
-}
-</script>
 </body>
 </html>

@@ -46,8 +46,7 @@ WORKDIR /work
 COPY tools/ tools/
 COPY site/ site/
 ENV HIRSEL_REPO=/src/hirsel
-RUN python3 tools/site_benchmarks.py --check \
-    && python3 tools/site_highlight.py --check \
+RUN python3 tools/site_highlight.py --check \
     && python3 tools/build_site.py --release-tag "${HIRSEL_REF}" --out /out/_site \
     && python3 tools/site_check_links.py --site-dir /out/_site --release-tag "${HIRSEL_REF}"
 

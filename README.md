@@ -7,7 +7,7 @@ the Hirsel program that serves it. It runs on [Fly.io](https://fly.io).
 
 | Path | What it is |
 | --- | --- |
-| `site/` | Hand-written pages and assets: the landing page, gallery, benchmarks board, install script, fonts, `_headers` |
+| `site/` | Hand-written pages and assets: the landing page, gallery, install script, fonts, `_headers` |
 | `tools/` | Python generators that turn a Hirsel checkout's docs into `/docs/`, `/docs/std/`, `/docs/spec/`, `primer.md`, `cookbook.md`, `api-index.md`, `llms.txt`, `llms-full.txt` and `sitemap.xml` |
 | `src/main.hirsel` | The server's entry: settings, listener, graceful stop |
 | `src/site.hirsel` | Loading the built site, clean-URL resolution, `_headers` rules, the route table |
@@ -26,10 +26,9 @@ HIRSEL_REPO=../hirsel python3 tools/site_check_links.py --site-dir _site --relea
 ```
 
 `--release-tag TAG` picks another tag, and `--release-tag main` uses the checkout's working
-tree. `HIRSEL_REPO` can stand in for `--hirsel-repo`. Two source checks run in the image build
-too: `tools/site_benchmarks.py --check` (the benchmarks page against `board-data.json`) and
-`tools/site_highlight.py --check` (the landing page's highlighted snippets against the grammar).
-Run either without `--check` to regenerate.
+tree. `HIRSEL_REPO` can stand in for `--hirsel-repo`. A source check runs in the image build
+too: `tools/site_highlight.py --check` (the landing page's highlighted snippets against the grammar).
+Run it without `--check` to regenerate.
 
 ## The server
 

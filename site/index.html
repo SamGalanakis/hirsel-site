@@ -119,11 +119,11 @@ header .strip button:hover::after,header .strip button:focus-visible::after{tran
 header .strip button.on{color:var(--ink)}
 header .strip button.on::after{transform:scaleX(1);opacity:1}
 
-.land{position:fixed;left:max(48px,var(--sal));bottom:calc(82px + var(--sab));z-index:2;pointer-events:none;max-width:min(560px,calc(100% - 96px))}
+.land{position:fixed;left:max(48px,var(--sal));bottom:calc(74px + var(--sab));z-index:2;pointer-events:none;max-width:min(540px,calc(100% - 96px))}
 .land>*{pointer-events:auto}
 .land h1{margin:0;font-size:clamp(72px,10.5vw,148px);line-height:.82}
 .land .head{margin:18px 0 0 4px;font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-wrap:balance}
-.land .tag{margin:10px 0 0 5px;max-width:44ch;font-size:16px;line-height:1.5;font-weight:400;color:#3d3b35;text-wrap:pretty}
+.land .tag{margin:10px 0 0 5px;max-width:42ch;font-size:16px;line-height:1.5;font-weight:400;color:#3d3b35;text-wrap:pretty}
 .land .actions{margin:22px 0 0 4px;display:flex;align-items:baseline;gap:26px}
 .land .in,.land .sublink{margin:0;font-size:15.5px;font-weight:500;line-height:1.4;padding-bottom:3px;border-bottom:1.5px solid var(--ink);border-radius:1px}
 .land .in{display:inline-flex;gap:10px;align-items:center;transition:border-color var(--t-state) var(--ease)}
@@ -134,14 +134,9 @@ header .strip button.on::after{transform:scaleX(1);opacity:1}
 .land .sublink{color:var(--mute);text-decoration:none;border-bottom-color:rgba(17,17,15,.3);transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease)}
 .land .sublink:hover,.land .sublink:focus-visible{color:var(--ink);border-bottom-color:var(--ink)}
 
-/* Quiet bottom proof & install strip — single typographic line, zero SaaS cards */
-.foot-strip{position:fixed;left:max(48px,var(--sal));right:max(48px,var(--sar));bottom:calc(18px + var(--sab));z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;border-top:1px solid var(--rule)}
-.foot-strip .proof{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 9px;font-size:12.5px;line-height:1.4;color:var(--mute)}
-.foot-strip .proof a{text-decoration:none;border-bottom:1px solid rgba(17,17,15,.22);padding-bottom:1px;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease)}
-.foot-strip .proof a:hover,.foot-strip .proof a:focus-visible{color:var(--ink);border-bottom-color:var(--ink)}
-.foot-strip .proof .sep{opacity:.42}
-.foot-strip .proof .ver{font-family:var(--mono);font-size:11.5px}
-.install-btn{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid var(--rule);border-radius:999px;background:rgba(251,246,236,.64);font:400 12px/1 var(--mono);color:var(--mute);white-space:nowrap;flex:none;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease),background-color var(--t-state) var(--ease),transform var(--t-press) var(--ease)}
+/* Quiet bottom-left install command — no proof strip, no divider across the grass */
+.foot-strip{position:fixed;left:max(48px,var(--sal));bottom:calc(20px + var(--sab));z-index:2;max-width:calc(100% - 96px)}
+.install-btn{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border:1px solid var(--rule);border-radius:999px;background:rgba(251,246,236,.72);font:400 12px/1 var(--mono);color:var(--mute);white-space:nowrap;max-width:100%;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease),background-color var(--t-state) var(--ease),transform var(--t-press) var(--ease)}
 .install-btn:hover,.install-btn:focus-visible{color:var(--ink);border-color:var(--rule-strong);background:rgba(251,246,236,.92)}
 .install-btn:active{transform:scale(.98)}
 .install-btn.ok{color:var(--ink);border-color:var(--ink)}
@@ -208,7 +203,7 @@ header .strip button.on::after{transform:scaleX(1);opacity:1}
 .walk .ar{display:inline-block;font-style:normal;transition:transform var(--t-state) var(--ease)}
 #prevBtn:hover .ar,#prevBtn:focus-visible .ar{transform:translateX(-4px)}
 #nextBtn:hover .ar,#nextBtn:focus-visible .ar{transform:translateX(4px)}
-/* the walk's last stop: quiet handoff out to Gallery, Benchmarks, and Docs */
+/* the walk's last stop: quiet handoff out to Gallery and Docs */
 .walk a{text-decoration:none;color:var(--mute);transition:color var(--t-state) var(--ease)} .walk a:hover,.walk a:focus-visible{color:var(--ink)}
 .walk .nx{margin-left:auto}
 .walk .end-links{margin-left:auto;display:inline-flex;align-items:baseline;gap:14px}
@@ -230,18 +225,13 @@ header .strip button.on::after{transform:scaleX(1);opacity:1}
 @media (max-width:920px) and (min-width:701px){
   header{padding:calc(18px + var(--sat)) max(32px,var(--sar)) 14px max(32px,var(--sal));gap:20px}
   header .strip{gap:13px;font-size:13px}
-  .land,.panel{left:max(32px,var(--sal))}
-  .foot-strip{left:max(32px,var(--sal));right:max(32px,var(--sar))}
+  .land,.panel,.foot-strip{left:max(32px,var(--sal))}
 }
 /* tablets: the scene takes the full width above, the text sits below on a readable measure */
 @media (max-width:900px) and (min-width:701px){
   .panel{right:max(32px,var(--sar));top:auto;bottom:calc(24px + var(--sab));transform:none;width:auto;max-width:600px;max-height:46vh;overflow:auto}
   .panel .body{max-width:62ch}
   .walk{margin-top:16px;padding-top:12px}
-}
-@media (max-width:920px){
-  .foot-strip{flex-direction:column;align-items:flex-start;gap:10px}
-  .land{bottom:calc(114px + var(--sab))}
 }
 @media (max-width:700px){
   header{padding:calc(14px + var(--sat)) max(18px,var(--sar)) 10px max(18px,var(--sal));gap:10px}
@@ -250,17 +240,15 @@ header .strip button.on::after{transform:scaleX(1);opacity:1}
   header .wm{font-size:19px;padding:10px 6px 10px 0;margin:-10px -6px -10px 0}
   header .ov-nav{gap:16px;font-size:13.5px}
   header .idx{display:none}
-  .land{left:max(18px,var(--sal));right:max(18px,var(--sar));bottom:calc(112px + var(--sab));max-width:none}
+  .land{left:max(18px,var(--sal));right:max(18px,var(--sar));bottom:calc(68px + var(--sab));max-width:none}
   .land h1{font-size:64px}
   .land .head{font-size:20px;margin-top:12px;margin-left:2px}
   .land .tag{font-size:14.5px;margin-top:8px;margin-left:2px}
   .land .actions{margin-top:14px;margin-left:2px;gap:22px}
   .land .in,.land .sublink{position:relative;font-size:14.5px}
   .land .in::after,.land .sublink::after{content:"";position:absolute;inset:-8px -8px -6px}
-  .foot-strip{left:max(18px,var(--sal));right:max(18px,var(--sar));bottom:calc(14px + var(--sab));gap:8px;padding-top:10px}
-  .foot-strip .proof{font-size:11.5px;gap:3px 7px}
-  .foot-strip .proof .hide-sm{display:none}
-  .install-btn{font-size:11px;padding:5px 9px;max-width:100%}
+  .foot-strip{left:max(18px,var(--sal));bottom:calc(18px + var(--sab));max-width:calc(100% - 36px)}
+  .install-btn{font-size:11px;padding:5px 9px}
   .install-btn code{overflow:hidden;text-overflow:ellipsis}
   .panel{left:max(16px,var(--sal));right:max(16px,var(--sar));top:auto;bottom:calc(var(--bar) + var(--sab) + 12px);transform:none;width:auto;max-height:52vh;overflow:auto;overscroll-behavior:contain}
   .panel h2{font-size:24px}
@@ -374,7 +362,6 @@ html,body{height:auto;overflow:auto}
   <nav class="ov-nav" id="ovNav" aria-label="Site">
     <a href="/docs/">Docs</a>
     <a href="/gallery/">Gallery</a>
-    <a href="/benchmarks/">Benchmarks</a>
     <a href="https://github.com/SamGalanakis/hirsel">GitHub</a>
   </nav>
 </header>
@@ -384,31 +371,20 @@ html,body{height:auto;overflow:auto}
   <section class="land" id="land">
     <h1 class="wmfont">hirsel</h1>
     <p class="head">Good fences make fast systems.</p>
-    <p class="tag">A zero-GC native systems language with explicit capabilities, logical byte and step budgets, deterministic execution, and recorded replay.</p>
+    <p class="tag">A zero-GC native systems language with explicit capabilities, bounded resources, and deterministic replay.</p>
     <div class="actions">
       <button class="in" id="walkIn">Take a walk <span aria-hidden="true">&rarr;</span></button>
       <a class="sublink" href="/docs/">Docs</a>
     </div>
   </section>
-  <footer class="foot-strip" id="footStrip" aria-label="Proof and install">
-    <div class="proof">
-      <a href="/benchmarks/">0.78&times; Rust instructions</a>
-      <span class="sep" aria-hidden="true">&middot;</span>
-      <span>explicit capabilities</span>
-      <span class="sep" aria-hidden="true">&middot;</span>
-      <span>deterministic replay</span>
-      <span class="sep hide-sm" aria-hidden="true">&middot;</span>
-      <a href="/gallery/" class="hide-sm">62k LOC in Hirsel</a>
-      <span class="sep" aria-hidden="true">&middot;</span>
-      <span class="ver">v0.2.0-pre</span>
-    </div>
+  <div class="foot-strip" id="footStrip">
     <button class="install-btn" id="copyInstall" type="button" title="Copy Linux x86_64 install command" aria-live="polite">
       <code>curl -fsSL https://hirsel.ai/install.sh | sh</code>
       <svg class="ic-copy" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"/></svg>
       <svg class="ic-ok" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.4 6.5 11.7 12.8 4.8"/></svg>
       <span class="cp-done" aria-hidden="true">Copied</span>
     </button>
-  </footer>
+  </div>
 </div>
 
 <section class="panel" id="panel" aria-live="polite" hidden>
@@ -430,12 +406,11 @@ fn fill() -&gt; Result[List[u64], Capacity] {
   <div class="walk">
     <button id="prevBtn"><i class="ar" aria-hidden="true">&larr;</i> <span></span></button>
     <button class="nx" id="nextBtn"><span></span> <i class="ar" aria-hidden="true">&rarr;</i></button>
-    <span class="end-links" id="endLinks" hidden><a href="/gallery/">Gallery</a><a href="/benchmarks/">Benchmarks</a><a href="/docs/">Docs</a></span>
+    <span class="end-links" id="endLinks" hidden><a href="/gallery/">Gallery</a><a href="/docs/">Docs</a></span>
   </div>
   <div class="handoff" id="handoff" hidden>
     <span>Next:</span>
     <a href="/gallery/">Gallery</a>
-    <a href="/benchmarks/">Benchmarks</a>
     <a href="/docs/">Docs</a>
   </div>
 </section>
@@ -477,25 +452,25 @@ const viewOf = h => ALIAS[h] || h;
 const COPY = {
   hill: ['The hill', '', ''],
   safe: ['Safe', 'Nothing is left lying on the hill.',
-    'An accepted program has no undefined behaviour, no data races, no use after free and no leaked resources. Values are freed deterministically with zero GC. Native C libraries called behind Foreign are trusted, not checked.'],
+    'An accepted program has no undefined behaviour, no data races, no use after free and no leaked resources. Values are freed deterministically without a garbage collector; native C libraries behind Foreign are trusted.'],
   parallel: ['Parallel', 'Every task keeps to its own ground.',
-    'Tasks share nothing. A value passes from one task to another only by moving through a spawn, a channel or a join. The only memory two tasks can both read is the immutable payload of an Arc, and task.spawn_unit isolates memory budgets across units.'],
+    'Tasks share nothing. A value crosses tasks only by moving through a spawn, a channel or a join. Immutable Arc payloads are the only shared memory, and spawn_unit isolates budgets across units.'],
   memory: ['Memory', 'The type decides who frees.',
-    'An ordinary type has one owner, freed when its owner leaves scope. Data that dies together lives in one region and is freed at once; Columns[T], Inline[T, N] and portable Simd[T, N] declare exact layout. Sharing is opt-in and counted, a move never copies owned data, and selected std components carry Lean proofs.'],
+    'An ordinary type has one owner, freed when it leaves scope. Data that dies together lives in a region and is freed at once; Columns[T], Inline[T, N] and Simd[T, N] declare exact layout. Sharing is opt-in and counted, and a move never copies owned data.'],
   bounded: ['Bounded', 'A full patch refuses the next mouthful.',
-    'Every allocation is made against a byte limit (bound bytes) and loops can be capped by steps (bound steps). Running out raises Capacity or OutOfTime, ordinary failures the program can catch and recover from.'],
+    'Every allocation counts against a byte limit (bound bytes) and loops can be capped by steps (bound steps). Running out raises Capacity or OutOfTime, ordinary failures the program can catch and recover from.'],
   deterministic: ['Deterministic', 'One run, every time.',
-    ['Given the same outside inputs, replay values and limits, every run of one build behaves identically — down to steps and OOM. Excludes Foreign (FFI) code and runs stopped from outside.',
-      ['replay', 'Record with hirsel run --record and replay with hirsel replay at zero grants; values, output and host effects match across engines and builds.'],
-      ['simulate', 'Swap real capabilities for std.sim (virtual clock, network partitions, filesystem crashes, UDP, exec, S3) and sweep seeds with hirsel test --sim, std.prop shrinking, --coverage, and refusal sweeps.']]],
+    ['Given the same outside inputs, replay values and limits, every run of one build behaves identically — down to steps and OOM. Excludes Foreign code and external stops.',
+      ['replay', 'Record with hirsel run --record and replay with hirsel replay at zero host grants.'],
+      ['simulate', 'Swap real capabilities for std.sim (virtual clock, network, filesystem) and sweep seeds with hirsel test --sim.']]],
   authority: ['Explicit authority', 'Only a sheep handed the key goes through the gate.',
-    'Files, network, clocks, randomness, env, tasks, secrets, Exec and Foreign arrive only as parameters. Linux Dir uses openat2(RESOLVE_BENEATH) with no fallback, Net uses explicit CIDR/port allowlists, Secret is unreadable, and missing grants exit 103 listing every missing grant. TLS uses rustls; Exec children are not confined and Hirsel does not apply seccomp or Landlock.'],
+    'Files, network, clocks, randomness, env, tasks, secrets and Foreign arrive only as parameters. Linux Dir uses openat2(RESOLVE_BENEATH), Net uses explicit allowlists, Secret is unreadable, and missing grants exit 103 listing every missing grant.'],
   local: ['Local', 'Each sheep needs only its own ground.',
-    'Checking a definition reads only its own body and the signatures it names, backed by a per-definition Merkle cache and hash-addressed code. hirsel publish and deploy transfer only missing objects by hash, and hirsel.lock pins sha256 roots.'],
+    'Checking a definition reads only its own body and the signatures it names, backed by a per-definition Merkle cache and hash-addressed code. hirsel.lock pins sha256 roots.'],
   fast: ['Fast', 'A straight line across the hill.',
-    ['Native code via Cranelift (dev) and LLVM (--release), with no garbage collector. Latest board (48e50bad, Passed: no): 0.78× AWFY instructions (11/14), 0.81× LangArena wall time (32/50), and 0.91× warm edit compile vs Rust, keeping bounds, overflow and step checks on.',
-      ['build', 'Per-definition content-addressed caching checks each definition once; ships built-in hirsel prof (CPU + exact replay memory) and out-of-the-box AArch64 Linux cross-compilation.'],
-      ['run', 'Declared layouts, regions, Columns[T] and Simd[T, N] keep hot loops tight. Some rows still trail Rust (Json::Generate, LogParser, compile instructions, Checkbox throughput/unsubscribed RSS).']]],
+    ['Compiles to native code through Cranelift (dev) and LLVM (--release), with no garbage collector and predictable speed.',
+      ['build', 'Per-definition caching checks and lowers each definition once, so an edit rechecks only what changed.'],
+      ['run', 'Declared layouts, regions, Columns[T] and Simd[T, N] keep hot loops tight with bounds, overflow and step checks on.']]],
 };
 /* In code: each property as real Hirsel, opened on request. Every program here is checked by
    `hirsel check` as shown (refusals explain why the checker rejects the line); the shell lines
@@ -944,9 +919,8 @@ SC.hill = (g) => {
   const st = document.getElementById('heroStage').getBoundingClientRect();
   const lr = document.getElementById('land').getBoundingClientRect();
   const fs = document.getElementById('footStrip').getBoundingClientRect();
-  const land = { left: lr.left - st.left, right: lr.right - st.left, top: lr.top - st.top };
-  const footTop = fs.height > 0 ? fs.top - st.top : H;
-  const ex = { l: land.left - 30, r: land.right + 96, t: land.top - (MOB ? 30 : 34) };
+  const land = { left: lr.left - st.left, right: Math.max(lr.right, fs.height > 0 ? fs.right : 0) - st.left, top: lr.top - st.top };
+  const ex = { l: land.left - 30, r: land.right + 72, t: land.top - (MOB ? 30 : 34) };
   /* hefting: no two sheep get edge-neighbouring diamonds, so every patch has open hill round it.
      A big screen sizes the patches so the whole flock grazes the near slope. A phone keeps them
      big enough to read, takes as many as fit whole above the name, and leaves the rest of the
@@ -954,7 +928,7 @@ SC.hill = (g) => {
   let cw = MOB ? (W - 24) / 4.4 : Math.max(W, H) / 9, cells;
   for (let it = 0; it < 60; it++) {
     const ch = cw * .5, cand = [], step = cw * .5;
-    const maxY = Math.min(H - ch * .6, footTop - ch * .65);
+    const maxY = H - ch * .6;
     /* on a phone the lattice is centred and every patch lies whole inside the width */
     const nx = MOB ? Math.floor((W - 2 * (cw * .45 + 6)) / step) + 1 : 0, x0 = MOB ? (W - (nx - 1) * step) / 2 : cw * .5;
     for (let j = 0; ; j++) {
@@ -979,7 +953,7 @@ SC.hill = (g) => {
      direction. A run breaks off here and there, and some breaks are gates between two posts. */
   const Y0 = g.rTo + ch * .9, cp = (A, B) => [cw * .5 + (A - B) * cw * .5, Y0 + (A + B) * ch * .5];
   const segs = [], posts = [], top = g.rTo + 30;
-  const inside = p => p[0] > -cw && p[0] < W + cw && p[1] > top && p[1] < footTop - 8 && !(p[0] > ex.l - 12 && p[0] < ex.r && p[1] > ex.t - 12);
+  const inside = p => p[0] > -cw && p[0] < W + cw && p[1] > top && p[1] < H + ch && !(p[0] > ex.l - 12 && p[0] < ex.r && p[1] > ex.t - 12);
   const dir = [[1, 0], [0, 1]], lim = Math.ceil((W / cw + H / ch) * 1.2) + 4;
   dir.forEach(([dA, dB], d) => {
     for (let m = -lim, gap = 0; m < lim; m += 4 + (hh(m, 40 + d) > .5 ? 1 : 0)) {

@@ -520,7 +520,6 @@ const AGENT_TXT = [
   '- Standard library index: https://hirsel.ai/api-index.md',
   '- Specification reference: https://hirsel.ai/docs/spec/',
   '- Gallery: https://hirsel.ai/gallery/',
-  '- Benchmarks: https://hirsel.ai/benchmarks/',
   '- Agent skill: https://github.com/SamGalanakis/hirsel/blob/main/skills/hirsel/SKILL.md',
   '- Install (Linux x86_64, glibc 2.28+; Apple Silicon macOS in progress): curl -fsSL https://hirsel.ai/install.sh | sh',
 ].join('\\n');
@@ -695,7 +694,6 @@ def render_sidebar(
     spec_cur = ' aria-current="page"' if (active_page == "spec" and active_spec is None) else ""
     spec_entry = f'<li><a class="side-page" href="/docs/spec/"{spec_cur}><span>Spec reference</span><span class="tag">spec</span></a></li>'
     gallery_entry = '<li><a class="side-page" href="/gallery/"><span>Gallery</span><span class="tag">built</span></a></li>'
-    bench_entry = '<li><a class="side-page" href="/benchmarks/"><span>Benchmarks</span><span class="tag">perf</span></a></li>'
 
     spec_group = ""
     if active_page == "spec" and spec_chapters:
@@ -721,7 +719,7 @@ def render_sidebar(
         f'<div class="drawer-head"><span class="wm wmfont">hirsel docs</span>'
         f'<button class="drawer-close" id="drawerClose" type="button" aria-label="Close navigation">{CLOSE_ICON}</button></div>'
         f"{parts}"
-        f'<div class="side-group"><p class="side-label">Reference</p><ul class="side-list">{std_entry}{spec_entry}{gallery_entry}{bench_entry}</ul></div>'
+        f'<div class="side-group"><p class="side-label">Reference</p><ul class="side-list">{std_entry}{spec_entry}{gallery_entry}</ul></div>'
         f"{spec_group}"
         f'<div class="side-foot"><a href="/"><span>&larr; Take a walk</span><span class="sub">Home</span></a></div>'
         f"</aside>"
@@ -786,7 +784,6 @@ def render_page(
             ("std", "/docs/std/", "Std"),
             ("spec", "/docs/spec/", "Spec"),
             ("gallery", "/gallery/", "Gallery"),
-            ("benchmarks", "/benchmarks/", "Benchmarks"),
         )
     )
 
@@ -812,7 +809,7 @@ def render_page(
     footer_html = (
         f'<footer class="doc-footer">'
         f'<span>Hirsel &middot; {html.escape(ref_note)} &middot; Run <code>hirsel primer</code> from your binary for exact local authority.</span>'
-        f'<span><a href="/">Home</a> &middot; <a href="/gallery/">Gallery</a> &middot; <a href="/benchmarks/">Benchmarks</a> &middot; <a href="{GITHUB_REPO}">GitHub</a></span>'
+        f'<span><a href="/">Home</a> &middot; <a href="/gallery/">Gallery</a> &middot; <a href="{GITHUB_REPO}">GitHub</a></span>'
         f'</footer>'
     )
 
