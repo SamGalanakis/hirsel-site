@@ -278,6 +278,7 @@ def extract_board_data(board_json_path: Path, current_board_path: Path | None) -
         "regressions": regressions,
         "compiler_versions": raw.get("compiler_versions", {}),
         "pins": raw.get("pins", {}),
+        **({"host": raw["host"]} if "host" in raw else {}),
         "runtime_notes": [
             "LangArena/Matmul::T4: Hirsel submits 4 row blocks to one worker for the process run. Rust creates and drops a 4-worker Rayon pool each iteration. Goose starts 4 workers at construction and joins them at checksum time. All workers share the measurement CPU.",
             "LangArena/Matmul::T8: Hirsel submits 8 row blocks to one worker for the process run. Rust creates and drops an 8-worker Rayon pool each iteration. Goose starts 8 workers at construction and joins them at checksum time. All workers share the measurement CPU.",
@@ -380,7 +381,7 @@ def render_html(data: dict) -> str:
         cls = "bad" if trails else "good"
         # Bar maps 0..2.0x linearly with 1.0x at 50%; clamped to [4%, 100%].
         pct = 0.0 if hr is None else max(4.0, min(100.0, (hr / 2.0) * 100.0))
-        note = " (higher is better)" if r["higher_is_better"] else ""
+        note = " (higher is better)" if r["higher_is_better"] else " (1 sample)" if r["metric"] == "seconds" else ""
         search_blob = html.escape(f"{r['goal']} {r['row']} {r['metric']}".lower(), quote=True)
         table_rows.append(
             f'<tr data-suite="{html.escape(r["goal"], quote=True)}" '
@@ -400,6 +401,27 @@ def render_html(data: dict) -> str:
         f"<li><code>{html.escape(k)}</code>: {html.escape(v)}</li>"
         for k, v in cv.items()
     )
+    host = data.get("host")
+    if host:
+        host_items = "".join(
+            f"<li><code>{html.escape(item)}</code></li>"
+            for item in (
+                f"CPU model: {host['cpu_model']}",
+                f"Kernel: {host['kernel']}",
+                f"SMT: {host['smt']['control']} (active {'yes' if host['smt']['active'] else 'no'})",
+                *(
+                    f"CPU {cpu}: governor {facts['governor']} ({facts['driver']}"
+                    + (f", {facts['energy_preference']}" if facts.get("energy_preference") else "")
+                    + "), boost "
+                    + {True: "on", False: "off"}.get(facts["boost"], "unknown")
+                    + f", SMT siblings {facts['smt_siblings']}"
+                    for cpu, facts in host["cpus"].items()
+                ),
+            )
+        )
+        host_card = f"<p>Measured on CPUs {html.escape(', '.join(map(str, host['measure_cpus'])))}:</p><ul>{host_items}</ul>"
+    else:
+        host_card = "<p>This board run predates host recording, so its CPU model, kernel, governor, boost and SMT state are not published.</p>"
     matmul_items = "".join(
         f"<li>{html.escape(note)}</li>" for note in data.get("runtime_notes", [])
     )
@@ -410,10 +432,9 @@ def render_html(data: dict) -> str:
         + (' aria-current="page"' if active else "")
         + f">{label}</a>"
         for href, label, active, hide_sm in (
-            ("/docs/", "Learn", False, False),
-            ("/docs/#cookbook", "Cookbook", False, True),
-            ("/docs/std/", "Std", False, True),
-            ("/docs/spec/", "Spec", False, False),
+            ("/docs/", "Docs", False, False),
+            ("/docs/spec/", "Spec", False, True),
+            ("/gallery/", "Gallery", False, False),
             ("/benchmarks/", "Benchmarks", True, False),
         )
     )
@@ -473,7 +494,7 @@ def render_html(data: dict) -> str:
             f'  <a class="brand" href="/" aria-label="Hirsel home">{RAM_MARK_SVG}<span class="wm wmfont">hirsel</span></a>',
             f'  <nav class="nav" aria-label="Site">{top_nav_html}</nav>',
             '  <div class="right">',
-            '    <a class="hill-link" href="/"><span class="dot" aria-hidden="true"></span>Overview</a>',
+            '    <a class="hill-link" href="/"><span class="dot" aria-hidden="true"></span>Take a walk</a>',
             f'    <button class="pill-copy" id="copyAgent" type="button" title="Copy Hirsel docs and install links for coding agents" aria-live="polite">{COPY_ICON}{OK_ICON}<span class="lbl"><span class="idle">Copy for agents</span><span class="done" aria-hidden="true">Copied</span></span></button>',
             f'    <a class="gh" href="{GITHUB_REPO}" aria-label="Source on GitHub" title="Source on GitHub">{GITHUB_ICON}</a>',
             "  </div>",
@@ -512,7 +533,9 @@ def render_html(data: dict) -> str:
             '  <section class="bench-section" id="methodology">',
             "    <h2>Methodology &amp; caveats</h2>",
             '    <div class="meth-grid">',
-            '      <div class="meth-card"><h3>Checks kept on</h3><p>Hirsel keeps <strong>bounds checks</strong>, <strong>integer overflow checks</strong>, <strong>logical byte admission</strong>, and <strong>step charges</strong> (wherever a step bound can be current) enabled. The Rust and Goose peers check bounds only.</p><p>Runtime instruction counts measure user-space CPU work with all PMU counters 100% active. Seconds use <code>perf duration_time</code> around the whole process (startup, setup, warmups, measured iterations, verification, exit).</p></div>',
+            '      <div class="meth-card"><h3>Checks kept on</h3><p>Hirsel keeps <strong>bounds checks</strong>, <strong>integer overflow checks</strong>, <strong>logical byte admission</strong>, and <strong>step charges</strong> (wherever a step bound can be current) enabled. The Rust and Goose peers check bounds only.</p><p>Runtime instruction counts measure user-space CPU work with all PMU counters 100% active. Seconds use <code>perf duration_time</code> around the whole process (startup, setup, warmups, measured iterations, verification, exit).</p><p>Every <code>seconds</code> row is <strong>a single sample per side</strong>: no repeats, so no minimum, maximum or spread is published for it. The instruction counts are the measurement the nightly gate checks.</p></div>',
+            f'      <div class="meth-card"><h3>Bench host</h3>{host_card}</div>',
+            '      <div class="meth-card"><h3>Compiler build (no BOLT)</h3><p>The nightly board builds the Hirsel compiler with <code>DIST_BOLT=off</code>, so its Compile rows measure a compiler <strong>without BOLT</strong>. Shipped releases are built with <code>--bolt</code>: the compiler is BOLT-optimized on a profile from the release std and cold LangArena builds, the same LangArena workload the Compile rows use. The board never measures that release binary.</p></div>',
             '      <div class="meth-card"><h3>Libraries, layouts &amp; verification</h3><p>The ports use <strong>different libraries and data layouts</strong>; ratios compare full implementations rather than identical IR. LangArena runs the pinned upstream <code>run.js</code> fixture with upstream checksums, and each AWFY row verifies its reference result internally.</p><p>Compile rows keep dependencies built, use one Cargo codegen unit with release incremental enabled, and edit Spectralnorm&rsquo;s checksum for the warm rebuild.</p></div>',
             f'      <div class="meth-card"><h3>Matmul threading notes</h3><ul>{matmul_items}</ul></div>',
             f'      <div class="meth-card"><h3>Pinned toolchain &amp; peers</h3><ul>{cv_items}</ul></div>',
@@ -532,7 +555,7 @@ def render_html(data: dict) -> str:
             "  </section>",
             '  <footer class="bench-foot">',
             '    <span>Data file: <code>site/benchmarks/board-data.json</code> &middot; Regenerated by <code>tools/site_benchmarks.py</code></span>',
-            f'    <span><a href="/">Overview</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/docs/spec/">Spec</a> &middot; <a href="{GITHUB_REPO}">GitHub</a></span>',
+            f'    <span><a href="/">Home</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/gallery/">Gallery</a> &middot; <a href="/docs/spec/">Spec</a> &middot; <a href="{GITHUB_REPO}">GitHub</a></span>',
             "  </footer>",
             "</main>",
             "<script>",

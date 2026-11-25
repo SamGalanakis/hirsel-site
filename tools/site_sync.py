@@ -31,6 +31,7 @@ GITHUB = "https://github.com/SamGalanakis/hirsel/"
 
 SITEMAP_ENTRIES = (
     ("https://hirsel.ai/", "weekly", "1.0"),
+    ("https://hirsel.ai/gallery/", "weekly", "0.9"),
     ("https://hirsel.ai/benchmarks/", "weekly", "0.9"),
     ("https://hirsel.ai/docs/", "weekly", "0.95"),
     ("https://hirsel.ai/docs/std/", "weekly", "0.85"),
@@ -68,6 +69,7 @@ hirsel run
 - [Cookbook](https://hirsel.ai/cookbook.md): tested task-shaped recipes (CLI, files, HTTP router, Store, tasks/units, `sim` testing & laws, `Inline`/`Simd`)
 - [Standard library index](https://hirsel.ai/api-index.md): every `std` module and its operations
 - [Specification reference](https://hirsel.ai/docs/spec/): normative chapters for syntax, ownership, memory, budgets, capabilities, CLI, packages, and protocols
+- [Gallery](https://hirsel.ai/gallery/): systems built on top in Hirsel (Serve platform, 62k LOC pure-Hirsel media/WebRTC stack, and package catalog)
 - [Benchmarks](https://hirsel.ai/benchmarks/): goal-board results, losing rows, and methodology
 - [Full agent bundle (llms-full.txt)](https://hirsel.ai/llms-full.txt): single-file bundle containing intro, primer, cookbook, std API index, and agent skill
 - [Agent skill (SKILL.md)]({GITHUB}blob/{ref}/skills/hirsel/SKILL.md): iterative check/explain/inspect workflow for coding agents

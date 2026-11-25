@@ -7,7 +7,7 @@ the Hirsel program that serves it. It runs on [Fly.io](https://fly.io).
 
 | Path | What it is |
 | --- | --- |
-| `site/` | Hand-written pages and assets: the landing page, benchmarks board, install script, fonts, `_headers` |
+| `site/` | Hand-written pages and assets: the landing page, gallery, benchmarks board, install script, fonts, `_headers` |
 | `tools/` | Python generators that turn a Hirsel checkout's docs into `/docs/`, `/docs/std/`, `/docs/spec/`, `primer.md`, `cookbook.md`, `api-index.md`, `llms.txt`, `llms-full.txt` and `sitemap.xml` |
 | `src/main.hirsel` | The server's entry: settings, listener, graceful stop |
 | `src/site.hirsel` | Loading the built site, clean-URL resolution, `_headers` rules, the route table |

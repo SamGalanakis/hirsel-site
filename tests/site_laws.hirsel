@@ -1,6 +1,7 @@
 // Laws of the site server over the fixture `fixture` writes into the test's own directory:
-// index.html, docs/index.html, docs/guide/index.html, install.sh, notes.md, fonts/a.woff2 and
-// a _headers file. Every expected value below is read off that tree and its _headers by hand.
+// index.html, gallery/index.html, docs/index.html, docs/guide/index.html, install.sh, notes.md,
+// fonts/a.woff2 and a _headers file. Every expected value below is read off that tree and its
+// _headers by hand.
 // Links are not covered here, since std has no way to make one. `load` skips them because
 // std.dir.walk reports a link without following it.
 
@@ -11,10 +12,12 @@ fn put(root: Dir, name: String, body: String) waits {
 }
 
 fn fixture(root: Dir) -> Site waits {
+    result.unwrap(std.dir.create_dir(root, "gallery"))
     result.unwrap(std.dir.create_dir(root, "docs"))
     result.unwrap(std.dir.create_dir(root, "docs/guide"))
     result.unwrap(std.dir.create_dir(root, "fonts"))
     put(root, "index.html", "<h1>home</h1>\n")
+    put(root, "gallery/index.html", "<h1>gallery</h1>\n")
     put(root, "docs/index.html", "<h1>docs</h1>\n")
     put(root, "docs/guide/index.html", "<h1>guide</h1>\n")
     put(root, "install.sh", "#!/bin/sh\necho hi\n")
@@ -81,6 +84,9 @@ fn law_resolve(files: Dir) -> Result[(), ()] waits {
     expect(s, "", false, "Serve index.html")
     expect(s, "", true, "Serve index.html")
     expect(s, "index.html", false, "Redirect /")
+    expect(s, "gallery", false, "Redirect /gallery/")
+    expect(s, "gallery|", true, "Serve gallery/index.html")
+    expect(s, "gallery|index.html", false, "Redirect /gallery/")
     expect(s, "docs", false, "Redirect /docs/")
     expect(s, "docs|", true, "Serve docs/index.html")
     expect(s, "docs|index.html", false, "Redirect /docs/")
@@ -220,6 +226,14 @@ fn law_wire(files: Dir, n: Net, c: Clock, tasks: Tasks) -> Result[(), ()] waits 
     let moved = ask(n, addr, c, "GET", "/docs?x=1")
     if moved.status != 307 || !has(moved, "location: /docs/?x=1") || !has(moved, "x-content-type-options: nosniff") {
         fail("GET /docs?x=1")
+    }
+    let gallery = ask(n, addr, c, "GET", "/gallery/")
+    if gallery.status != 200 || gallery.body != b"<h1>gallery</h1>\n" || !has(gallery, "content-type: text/html; charset=utf-8") || !has(gallery, "cache-control: public, max-age=0, must-revalidate") || !has(gallery, "x-content-type-options: nosniff") {
+        fail("GET /gallery/")
+    }
+    let gallery_moved = ask(n, addr, c, "GET", "/gallery")
+    if gallery_moved.status != 307 || !has(gallery_moved, "location: /gallery/") || !has(gallery_moved, "x-content-type-options: nosniff") {
+        fail("GET /gallery")
     }
     let font = ask(n, addr, c, "GET", "/fonts/a.woff2")
     if font.status != 200 || !has(font, "content-type: font/woff2") || !has(font, "cache-control: public, max-age=2592000") || has(font, "cache-control: public, max-age=0, must-revalidate") {

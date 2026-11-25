@@ -89,66 +89,42 @@
 ::selection{background:rgba(203,39,31,.16);color:var(--ink)}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
-html{scroll-behavior:smooth;background:var(--cream);color:var(--ink)}
-body{margin:0;min-height:100%;background:var(--cream);color:var(--ink);overflow-x:hidden}
-html.walk-mode,body.in-walk{height:100%;overflow:hidden}
-/* the page claims sideways drags for walking the hill only while walking; overview scrolls normally */
+html{background:var(--cream);color:var(--ink);height:100%;overflow:hidden}
+body{margin:0;height:100%;background:var(--cream);color:var(--ink);overflow:hidden}
+/* the page claims sideways drags for walking the hill only while walking */
 body.in-walk,.panel{touch-action:pan-y pinch-zoom}
 .zoomed body.in-walk,.zoomed .panel{touch-action:auto}
 body{font:400 16px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-kerning:normal;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 button:disabled{cursor:default;opacity:.38}
 a{color:inherit}
-.hero-stage{position:relative;width:100%;height:92svh;min-height:560px;max-height:880px;overflow:hidden;border-bottom:1px solid var(--rule)}
-body.in-walk .hero-stage{position:fixed;inset:0;height:100vh;max-height:none;border-bottom:0;z-index:1}
+.hero-stage{position:fixed;inset:0;width:100%;height:100dvh;overflow:hidden;z-index:1}
 canvas#c{position:absolute;inset:0;width:100%;height:100%;display:block}
 .wmfont{font-family:"Archivo Black","Arial Black","Inter",system-ui,sans-serif;font-weight:400;font-synthesis:none;letter-spacing:-.035em}
 
-header{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:24px;padding:calc(14px + var(--sat)) max(48px,var(--sar)) 14px max(48px,var(--sal));z-index:20;background:rgba(251,246,236,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid var(--rule)}
-body.in-walk header{background:transparent;-webkit-backdrop-filter:none;backdrop-filter:none;border-bottom:0;padding-top:calc(18px + var(--sat));padding-bottom:18px}
+header{position:fixed;left:0;right:0;top:0;display:flex;align-items:center;gap:24px;padding:calc(20px + var(--sat)) max(48px,var(--sar)) 14px max(48px,var(--sal));z-index:20;background:transparent}
 header .wm{font-size:22px;line-height:1;flex:none}
-header .ov-nav{display:flex;align-items:center;gap:20px;font-size:14px;font-weight:500;white-space:nowrap;min-width:0;overflow-x:auto;scrollbar-width:none}
-header .ov-nav::-webkit-scrollbar{display:none}
+header .ov-nav{margin-left:auto;display:flex;align-items:center;gap:24px;font-size:14px;font-weight:500;white-space:nowrap;flex:none}
 header .ov-nav a{position:relative;color:var(--mute);text-decoration:none;padding:4px 0 5px;transition:color var(--t-state) var(--ease);flex:none}
 header .ov-nav a::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:left;opacity:.35;transition:transform var(--t-state) var(--ease),opacity var(--t-state) var(--ease)}
 header .ov-nav a:hover,header .ov-nav a:focus-visible{color:var(--ink)}
 header .ov-nav a:hover::after,header .ov-nav a:focus-visible::after{transform:scaleX(1)}
 header .idx{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
 header .idx::-webkit-scrollbar{display:none}
-header .strip{position:relative;display:flex;gap:20px;font-size:14px;font-weight:500;white-space:nowrap}
+header .strip{position:relative;display:flex;gap:18px;font-size:14px;font-weight:500;white-space:nowrap}
 header .strip button{position:relative;color:var(--mute);padding:4px 0 5.5px;transition:color var(--t-state) var(--ease);flex:none}
 header .strip button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:currentColor;transform:scaleX(0);transform-origin:left;opacity:.35;transition:transform var(--t-state) var(--ease),opacity var(--t-state) var(--ease)}
 header .strip button:hover,header .strip button:focus-visible{color:var(--ink)}
 header .strip button:hover::after,header .strip button:focus-visible::after{transform:scaleX(1)}
 header .strip button.on{color:var(--ink)}
 header .strip button.on::after{transform:scaleX(1);opacity:1}
-header .links{margin-left:auto;display:flex;align-items:center;gap:12px;flex:none}
-header .copy{position:relative;display:inline-flex;align-items:center;gap:6px;font-size:13.5px;font-weight:500;line-height:1;color:var(--mute);padding:6px 11px;border:1px solid var(--rule);border-radius:999px;white-space:nowrap;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease),background-color var(--t-state) var(--ease),transform var(--t-press) var(--ease)}
-header .copy:hover,header .copy:focus-visible{color:var(--ink);border-color:rgba(17,17,15,.34);background:rgba(17,17,15,.035)}
-header .copy:active{transform:scale(.97)}
-header .copy.ok{color:var(--ink);border-color:var(--ink)}
-header .copy svg{width:13.5px;height:13.5px;flex:none}
-header .copy .ic-ok,header .copy.ok .ic-copy{display:none}
-header .copy.ok .ic-ok{display:block}
-header .copy .lbl{display:grid;text-align:left}
-header .copy .lbl span{grid-area:1/1;transition:opacity var(--t-press) var(--ease)}
-header .copy .lbl .done,header .copy.ok .lbl .idle{opacity:0}
-header .copy.ok .lbl .done{opacity:1}
-header .gh{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;margin-right:-8px;border-radius:50%;color:var(--ink);opacity:.82;transition:opacity var(--t-state) var(--ease),background-color var(--t-state) var(--ease)}
-header .gh:hover,header .gh:focus-visible{opacity:1;background:rgba(17,17,15,.06)}
-header .gh svg{width:20px;height:20px;display:block;transition:transform var(--t-state) var(--ease)}
-header .gh:hover svg,header .gh:focus-visible svg{transform:rotate(-8deg) scale(1.06)}
-header .gh:active svg{transform:scale(.92);transition-duration:var(--t-press)}
 
-.land{position:absolute;left:max(48px,var(--sal));bottom:44px;z-index:2;pointer-events:none;max-width:min(620px,calc(100% - 96px))}
+.land{position:fixed;left:max(48px,var(--sal));bottom:calc(82px + var(--sab));z-index:2;pointer-events:none;max-width:min(560px,calc(100% - 96px))}
 .land>*{pointer-events:auto}
-.land h1{margin:0;font-size:clamp(72px,11vw,156px);line-height:.82}
-.land .head{margin:20px 0 0 4px;font-size:25px;line-height:1.2;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-wrap:balance}
-.land .tag{margin:10px 0 0 5px;max-width:46ch;font-size:16px;line-height:1.5;font-weight:400;color:#3d3b35;text-wrap:pretty}
-.land .install-pill{margin:16px 0 0 4px;display:inline-flex;align-items:center;gap:10px;padding:7px 12px;border-radius:8px;background:rgba(251,246,236,.92);border:1px solid var(--rule-strong);font:500 13px/1.3 var(--mono);color:var(--ink);max-width:100%;overflow-x:auto}
-.land .install-pill .plat{color:var(--mute);font-weight:400}
-.land .actions{margin:20px 0 0 4px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
-.land .row{display:flex;flex-wrap:wrap;align-items:baseline;gap:24px}
+.land h1{margin:0;font-size:clamp(72px,10.5vw,148px);line-height:.82}
+.land .head{margin:18px 0 0 4px;font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-wrap:balance}
+.land .tag{margin:10px 0 0 5px;max-width:44ch;font-size:16px;line-height:1.5;font-weight:400;color:#3d3b35;text-wrap:pretty}
+.land .actions{margin:22px 0 0 4px;display:flex;align-items:baseline;gap:26px}
 .land .in,.land .sublink{margin:0;font-size:15.5px;font-weight:500;line-height:1.4;padding-bottom:3px;border-bottom:1.5px solid var(--ink);border-radius:1px}
 .land .in{display:inline-flex;gap:10px;align-items:center;transition:border-color var(--t-state) var(--ease)}
 .land .in:focus-visible,.land .sublink:focus-visible{outline-offset:6px}
@@ -158,59 +134,23 @@ header .gh:active svg{transform:scale(.92);transition-duration:var(--t-press)}
 .land .sublink{color:var(--mute);text-decoration:none;border-bottom-color:rgba(17,17,15,.3);transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease)}
 .land .sublink:hover,.land .sublink:focus-visible{color:var(--ink);border-bottom-color:var(--ink)}
 
-/* Scrollable overview: unmistakably separated Core Language & Runtime vs Built on Top, in Hirsel */
-main.overview{position:relative;z-index:2;background:var(--cream)}
-.band{padding:76px max(48px,var(--sar)) 84px max(48px,var(--sal));scroll-margin-top:64px}
-.band-inner{max-width:1140px;margin:0 auto}
-.band-core{background:var(--cream)}
-.band-top{background:var(--ground);border-top:3px solid var(--ink);position:relative}
-.band-top::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--red);width:min(280px,38vw)}
-.band-head{max-width:74ch;margin-bottom:36px}
-.band-eyebrow{display:inline-flex;align-items:center;gap:9px;margin:0 0 12px;font:600 12px/1 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--red)}
-.band-eyebrow .num{display:inline-flex;align-items:center;justify-content:center;padding:3px 8px;border-radius:999px;background:var(--ink);color:var(--cream);font-size:11px;letter-spacing:.04em}
-.band-top .band-eyebrow .num{background:var(--red);color:var(--cream)}
-.band-head h2{margin:0 0 12px;font-family:"Archivo Black","Arial Black",Inter,system-ui,sans-serif;font-weight:400;font-synthesis:none;font-size:clamp(30px,3.8vw,44px);line-height:1.06;letter-spacing:-.03em;color:var(--ink)}
-.band-head p{margin:0;font-size:17px;line-height:1.58;color:var(--body);text-wrap:pretty}
-
-.card-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
-.card{display:flex;flex-direction:column;gap:12px;padding:24px 26px;border-radius:14px;background:var(--paper);border:1px solid var(--rule);scroll-margin-top:78px}
-.band-top .card{background:var(--cream);border:1px solid var(--rule-strong);border-top:3px solid var(--ink)}
-.card-top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.card h3{margin:0;font-family:"Archivo Black","Arial Black",Inter,system-ui,sans-serif;font-weight:400;font-synthesis:none;font-size:21px;line-height:1.18;letter-spacing:-.02em;color:var(--ink)}
-.card-tag{font:500 11.5px/1 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--mute);padding:4px 8px;border-radius:999px;background:rgba(17,17,15,.06)}
-.card-tag.new{background:var(--red-soft);color:var(--red)}
-.card p{margin:0;font-size:15px;line-height:1.6;color:var(--body);text-wrap:pretty}
-.card ul{margin:0;padding-left:19px;font-size:14.5px;line-height:1.58;color:var(--body)}
-.card li{margin:0 0 6px}
-.card li:last-child{margin-bottom:0}
-.card code{font-family:var(--mono);font-size:.86em;background:rgba(17,17,15,.06);border:1px solid rgba(17,17,15,.08);padding:.08em .34em;border-radius:4px;color:var(--ink)}
-.card .note{padding:10px 13px;border-radius:8px;background:rgba(17,17,15,.04);border-left:3px solid var(--umber);font-size:13.5px;line-height:1.54;color:var(--body)}
-.card .note.scope{border-left-color:var(--red);background:var(--red-soft)}
-.card .quiet{font-size:13.5px;color:var(--mute)}
-.card-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:2px 0}
-.stat-box{padding:10px 12px;border-radius:9px;background:var(--cream);border:1px solid var(--rule)}
-.stat-box .sv{display:block;font-family:"Archivo Black","Arial Black",Inter,system-ui,sans-serif;font-size:20px;line-height:1.1;color:var(--moss);letter-spacing:-.02em}
-.stat-box .sl{display:block;margin-top:3px;font:500 11.5px/1.3 var(--mono);color:var(--mute)}
-.card-foot{margin-top:auto;padding-top:10px;border-top:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;font-size:13.5px;font-weight:500}
-.card-link{color:var(--ink);text-decoration:none;border-bottom:1.5px solid rgba(203,39,31,.45);padding-bottom:1px;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease)}
-.card-link:hover,.card-link:focus-visible{color:var(--red);border-bottom-color:var(--red)}
-.walk-btn{display:inline-flex;align-items:center;gap:5px;font-size:13.5px;font-weight:500;color:var(--mute);border-bottom:1px solid var(--rule);padding-bottom:1px;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease)}
-.walk-btn:hover,.walk-btn:focus-visible{color:var(--ink);border-bottom-color:var(--ink)}
-
-.stack-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
-.pkg-list{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0}
-.pkg-chip{font:500 12px/1.2 var(--mono);padding:4px 8px;border-radius:6px;background:var(--paper);border:1px solid var(--rule);color:var(--ink)}
-.pkg-chip.bundle{background:var(--ground);border-color:var(--rule-strong)}
-.pkg-chip.ffi{background:rgba(128,85,42,.1);border-color:rgba(128,85,42,.28);color:var(--umber)}
-
-.site-foot{padding:44px max(48px,var(--sar)) 56px max(48px,var(--sal));background:var(--cream);border-top:1px solid var(--rule)}
-.foot-inner{max-width:1140px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px}
-.foot-left{display:flex;flex-direction:column;gap:6px}
-.foot-left .wm{font-size:22px;line-height:1}
-.foot-left p{margin:0;font-size:13.5px;color:var(--mute)}
-.foot-links{display:flex;flex-wrap:wrap;gap:18px;font-size:14px;font-weight:500;color:var(--mute)}
-.foot-links a{text-decoration:none;border-bottom:1px solid transparent;padding-bottom:2px;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease)}
-.foot-links a:hover,.foot-links a:focus-visible{color:var(--ink);border-bottom-color:var(--ink)}
+/* Quiet bottom proof & install strip — single typographic line, zero SaaS cards */
+.foot-strip{position:fixed;left:max(48px,var(--sal));right:max(48px,var(--sar));bottom:calc(18px + var(--sab));z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-top:12px;border-top:1px solid var(--rule)}
+.foot-strip .proof{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 9px;font-size:12.5px;line-height:1.4;color:var(--mute)}
+.foot-strip .proof a{text-decoration:none;border-bottom:1px solid rgba(17,17,15,.22);padding-bottom:1px;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease)}
+.foot-strip .proof a:hover,.foot-strip .proof a:focus-visible{color:var(--ink);border-bottom-color:var(--ink)}
+.foot-strip .proof .sep{opacity:.42}
+.foot-strip .proof .ver{font-family:var(--mono);font-size:11.5px}
+.install-btn{display:inline-flex;align-items:center;gap:7px;padding:5px 10px;border:1px solid var(--rule);border-radius:999px;background:rgba(251,246,236,.64);font:400 12px/1 var(--mono);color:var(--mute);white-space:nowrap;flex:none;transition:color var(--t-state) var(--ease),border-color var(--t-state) var(--ease),background-color var(--t-state) var(--ease),transform var(--t-press) var(--ease)}
+.install-btn:hover,.install-btn:focus-visible{color:var(--ink);border-color:var(--rule-strong);background:rgba(251,246,236,.92)}
+.install-btn:active{transform:scale(.98)}
+.install-btn.ok{color:var(--ink);border-color:var(--ink)}
+.install-btn code{font:inherit}
+.install-btn svg{width:12.5px;height:12.5px;flex:none}
+.install-btn .ic-ok,.install-btn.ok .ic-copy{display:none}
+.install-btn.ok .ic-ok{display:block}
+.install-btn .cp-done{display:none;font-family:Inter,system-ui,sans-serif;font-weight:500;font-size:11.5px}
+.install-btn.ok .cp-done{display:inline}
 
 .panel{position:fixed;left:max(48px,var(--sal));top:50%;transform:translateY(-50%);width:340px;z-index:2}
 .panel h2{margin:0;font:400 31px/1.1 "Archivo Black","Arial Black",Inter,system-ui,sans-serif;font-synthesis:none;letter-spacing:-.025em;text-wrap:balance}
@@ -268,21 +208,30 @@ main.overview{position:relative;z-index:2;background:var(--cream)}
 .walk .ar{display:inline-block;font-style:normal;transition:transform var(--t-state) var(--ease)}
 #prevBtn:hover .ar,#prevBtn:focus-visible .ar{transform:translateX(-4px)}
 #nextBtn:hover .ar,#nextBtn:focus-visible .ar{transform:translateX(4px)}
-/* the walk's last stop: the same quiet link, out to the source */
+/* the walk's last stop: quiet handoff out to Gallery, Benchmarks, and Docs */
 .walk a{text-decoration:none;color:var(--mute);transition:color var(--t-state) var(--ease)} .walk a:hover,.walk a:focus-visible{color:var(--ink)}
-#endLink:hover .ar,#endLink:focus-visible .ar{transform:translateX(4px)}
 .walk .nx{margin-left:auto}
+.walk .end-links{margin-left:auto;display:inline-flex;align-items:baseline;gap:14px}
+.walk .end-links a{border-bottom:1px solid rgba(17,17,15,.22);padding-bottom:1px}
+.walk .end-links a:hover,.walk .end-links a:focus-visible{border-bottom-color:var(--ink)}
+.handoff{display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--rule);flex-wrap:wrap;align-items:baseline;gap:6px 14px;font-size:12.5px;color:var(--mute)}
+.handoff span{font-size:12px;opacity:.8}
+.handoff a{text-decoration:none;border-bottom:1px solid rgba(17,17,15,.26);padding-bottom:1px}
 :focus-visible{outline:2px solid var(--ink);outline-offset:3px}
 
+@media (max-width:1120px){
+  body.in-walk header .ov-nav{display:none}
+}
 @media (max-width:1000px) and (min-width:701px){
   .panel{width:300px}
   .panel h2{font-size:27px}
   .panel .body{font-size:15px}
 }
 @media (max-width:920px) and (min-width:701px){
-  header{padding:calc(18px + var(--sat)) max(32px,var(--sar)) 18px max(32px,var(--sal));gap:20px}
+  header{padding:calc(18px + var(--sat)) max(32px,var(--sar)) 14px max(32px,var(--sal));gap:20px}
   header .strip{gap:13px;font-size:13px}
   .land,.panel{left:max(32px,var(--sal))}
+  .foot-strip{left:max(32px,var(--sal));right:max(32px,var(--sar))}
 }
 /* tablets: the scene takes the full width above, the text sits below on a readable measure */
 @media (max-width:900px) and (min-width:701px){
@@ -291,38 +240,28 @@ main.overview{position:relative;z-index:2;background:var(--cream)}
   .walk{margin-top:16px;padding-top:12px}
 }
 @media (max-width:920px){
-  .card-grid,.stack-grid{grid-template-columns:1fr}
-  .band{padding:56px max(24px,var(--sar)) 64px max(24px,var(--sal))}
-  .site-foot{padding:36px max(24px,var(--sar)) 44px max(24px,var(--sal))}
+  .foot-strip{flex-direction:column;align-items:flex-start;gap:10px}
+  .land{bottom:calc(114px + var(--sab))}
 }
 @media (max-width:700px){
-  header{padding:calc(10px + var(--sat)) max(14px,var(--sar)) 10px max(14px,var(--sal));gap:10px}
+  header{padding:calc(14px + var(--sat)) max(18px,var(--sar)) 10px max(18px,var(--sal));gap:10px}
   body.in-walk header{padding:calc(12px + var(--sat)) max(16px,var(--sar)) 0 max(16px,var(--sal))}
   /* phone targets are 44px; the negative margins keep the header the height it was, so the ridge stays put */
   header .wm{font-size:19px;padding:10px 6px 10px 0;margin:-10px -6px -10px 0}
-  header .ov-nav{gap:12px;font-size:13px}
-  header .ov-nav .hide-sm{display:none}
+  header .ov-nav{gap:16px;font-size:13.5px}
   header .idx{display:none}
-  header .links{gap:6px}
-  header .copy{font-size:12.5px;padding:6px 8px}
-  header .copy .lbl{display:none}
-  header .copy::before{content:"";position:absolute;inset:-8px -4px}
-  header .gh{width:40px;height:40px;margin:-4px -8px -4px 0}
-  .hero-stage{height:86svh;min-height:500px}
-  .land{left:max(16px,var(--sal));right:max(16px,var(--sar));bottom:24px;max-width:none}
-  .land h1{font-size:68px}
-  .land .head{font-size:20px;margin-top:14px;margin-left:2px}
+  .land{left:max(18px,var(--sal));right:max(18px,var(--sar));bottom:calc(112px + var(--sab));max-width:none}
+  .land h1{font-size:64px}
+  .land .head{font-size:20px;margin-top:12px;margin-left:2px}
   .land .tag{font-size:14.5px;margin-top:8px;margin-left:2px}
-  .land .install-pill{margin-top:12px;margin-left:2px;font-size:11.5px;padding:6px 10px}
-  .land .install-pill .plat{display:none}
-  .land .actions{margin-top:14px;margin-left:2px;gap:8px}
-  .land .row{gap:18px}
+  .land .actions{margin-top:14px;margin-left:2px;gap:22px}
   .land .in,.land .sublink{position:relative;font-size:14.5px}
   .land .in::after,.land .sublink::after{content:"";position:absolute;inset:-8px -8px -6px}
-  .band{padding:44px max(16px,var(--sar)) 52px max(16px,var(--sal))}
-  .card{padding:18px 18px}
-  .card-stats{grid-template-columns:1fr}
-  .site-foot{padding:32px max(16px,var(--sar)) 44px max(16px,var(--sal))}
+  .foot-strip{left:max(18px,var(--sal));right:max(18px,var(--sar));bottom:calc(14px + var(--sab));gap:8px;padding-top:10px}
+  .foot-strip .proof{font-size:11.5px;gap:3px 7px}
+  .foot-strip .proof .hide-sm{display:none}
+  .install-btn{font-size:11px;padding:5px 9px;max-width:100%}
+  .install-btn code{overflow:hidden;text-overflow:ellipsis}
   .panel{left:max(16px,var(--sal));right:max(16px,var(--sar));top:auto;bottom:calc(var(--bar) + var(--sab) + 12px);transform:none;width:auto;max-height:52vh;overflow:auto;overscroll-behavior:contain}
   .panel h2{font-size:24px}
   .slot{margin-top:10px}
@@ -335,6 +274,7 @@ main.overview{position:relative;z-index:2;background:var(--cream)}
   .deep button::before{content:"";position:absolute;inset:-12px -11px -6px}
   .code pre{line-height:1.55}
   .walk{display:none}
+  .handoff{display:flex}
 }
 /* a phone walks the hill from the bottom, under the thumb: back, where you are (which opens the
    whole list), on. The same hairline and muted arrows as the walk row it stands in for. */
@@ -386,7 +326,7 @@ header .menu:active{background:rgba(17,17,15,.06)}
 .list ol button:active{background:rgba(17,17,15,.05)}
 .list ol button[aria-current]{color:var(--ink);font-weight:600}
 .list ol button[aria-current] i{background:var(--ink)}
-@media (max-width:700px){header .menu{display:inline-flex}.bar{display:flex}}
+@media (max-width:700px){.bar{display:flex}}
 /* a phone on its side: one short row for the bar, and the text scrolls sooner so the scene keeps its ground */
 @media (max-width:700px) and (max-height:480px){
   :root{--bar:44px}
@@ -408,23 +348,17 @@ header .menu:active{background:rgba(17,17,15,.06)}
   @starting-style{.list[open]{opacity:0}}
 }
 </style>
-<!-- without scripts: keep the full static page, hide only the interactive canvas and walk buttons -->
+<!-- without scripts: keep the cover readable, hide only the interactive canvas and walk buttons -->
 <noscript><style>
-#c,#walkIn,.walk-btn,#menuBtn,#copyAgent,.panel,.bar,.list{display:none!important}
-.hero-stage{height:auto;min-height:0;max-height:none;padding:96px max(48px,var(--sar)) 48px max(48px,var(--sal))}
-.land{position:static;max-width:42rem}
+html,body{height:auto;overflow:auto}
+#c,#walkIn,.panel,.bar,.list{display:none!important}
+.hero-stage{position:static;height:auto;padding:96px max(48px,var(--sar)) 48px max(48px,var(--sal))}
+.land,.foot-strip{position:static;max-width:42rem;margin-top:28px}
 </style></noscript>
 </head>
 <body>
 <header>
-  <button class="wm wmfont" id="wm" aria-label="Hirsel home">hirsel</button>
-  <nav class="ov-nav" id="ovNav" aria-label="Overview">
-    <a href="#core" class="hide-sm">Core</a>
-    <a href="#built-on-top" class="hide-sm">Built on Top</a>
-    <a href="/docs/">Learn</a>
-    <a href="/docs/spec/" class="hide-sm">Spec</a>
-    <a href="/benchmarks/">Benchmarks</a>
-  </nav>
+  <button class="wm wmfont" id="wm" aria-label="Hirsel home" hidden>hirsel</button>
   <nav class="idx" id="idx" aria-label="Properties" hidden>
     <div class="strip" id="strip">
       <button data-v="safe">Safe</button>
@@ -437,16 +371,11 @@ header .menu:active{background:rgba(17,17,15,.06)}
       <button data-v="fast">Fast</button>
     </div>
   </nav>
-  <nav class="links" aria-label="Site">
-    <button class="copy" id="copyAgent" type="button" title="Copy Hirsel docs and install links for coding agents" aria-live="polite">
-      <svg class="ic-copy" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"/></svg>
-      <svg class="ic-ok" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.4 6.5 11.7 12.8 4.8"/></svg>
-      <span class="lbl"><span class="idle">Copy for agents</span><span class="done" aria-hidden="true">Copied</span></span>
-    </button>
-    <button class="menu" id="menuBtn" aria-label="All views" aria-haspopup="dialog" aria-controls="list" aria-expanded="false"><svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 6.5h13M3.5 13.5h8"/></svg></button>
-    <a class="gh" id="gh" href="https://github.com/samgalanakis/hirsel" aria-label="Source on GitHub" title="Source on GitHub">
-      <svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-    </a>
+  <nav class="ov-nav" id="ovNav" aria-label="Site">
+    <a href="/docs/">Docs</a>
+    <a href="/gallery/">Gallery</a>
+    <a href="/benchmarks/">Benchmarks</a>
+    <a href="https://github.com/SamGalanakis/hirsel">GitHub</a>
   </nav>
 </header>
 
@@ -456,194 +385,31 @@ header .menu:active{background:rgba(17,17,15,.06)}
     <h1 class="wmfont">hirsel</h1>
     <p class="head">Good fences make fast systems.</p>
     <p class="tag">A zero-GC native systems language with explicit capabilities, logical byte and step budgets, deterministic execution, and recorded replay.</p>
-    <div class="install-pill"><code>curl -fsSL https://hirsel.ai/install.sh | sh</code><span class="plat">Linux x86_64</span></div>
     <div class="actions">
-      <div class="row">
-        <button class="in" id="walkIn">Take a walk <span aria-hidden="true">&rarr;</span></button>
-        <a class="sublink" href="#core">Core language</a>
-        <a class="sublink" href="#built-on-top">Built on top</a>
-        <a class="sublink" href="/docs/">Docs</a>
-      </div>
+      <button class="in" id="walkIn">Take a walk <span aria-hidden="true">&rarr;</span></button>
+      <a class="sublink" href="/docs/">Docs</a>
     </div>
   </section>
-</div>
-
-<main class="overview" id="overview">
-  <section class="band band-core" id="core" aria-labelledby="core-heading">
-    <div class="band-inner">
-      <div class="band-head">
-        <p class="band-eyebrow"><span class="num">01</span> Core Language &amp; Runtime</p>
-        <h2 id="core-heading">Core Language &amp; Runtime</h2>
-        <p>Everything in this section is enforced by the Hirsel compiler and runtime itself: memory safety, capability parameters, logical budgets, deterministic execution, simulation hooks, and content-addressed builds.</p>
-      </div>
-
-      <div class="card-grid">
-        <article class="card" id="safe">
-          <div class="card-top"><h3>Safe</h3><span class="card-tag">value ownership &middot; zero GC</span></div>
-          <p>An accepted Hirsel program has no undefined behaviour, no data races, no use after free, and no leaked resources. Types declare their ownership representation once, and values are freed deterministically without a garbage collector.</p>
-          <p class="note">Native C libraries called behind <code>Foreign</code> are trusted, not checked: safety guarantees hold while foreign code keeps its native contract.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/spec/ownership/">Ownership spec</a>
-            <button class="walk-btn" type="button" data-walk="safe">Walk this &rarr;</button>
-          </div>
-        </article>
-
-        <article class="card" id="deterministic">
-          <div class="card-top"><h3>Deterministic</h3><span class="card-tag">same run &middot; recorded replay</span></div>
-          <p>Given the same outside inputs, replay values, and limits, every run of one build behaves identically — down to its steps and where it runs out of memory. Across engines and builds, values, output, and host effects match.</p>
-          <p class="note">Applies to pure Hirsel and host-provider code; excludes <code>Foreign</code> (FFI) code and runs stopped from outside.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/spec/semantics/#sem-8-determinism">Determinism contract</a>
-            <button class="walk-btn" type="button" data-walk="deterministic">Walk this &rarr;</button>
-          </div>
-        </article>
-
-        <article class="card" id="simulate">
-          <div class="card-top"><h3>Simulate</h3><span class="card-tag new">std.sim &middot; std.prop</span></div>
-          <p>Because capabilities are ordinary values, tests swap real host providers for <code>std.sim</code> simulators without altering application code: a virtual clock and SplitMix64 decision stream (<code>std.sim.world</code>), network partitions and packet loss (<code>std.sim.net</code>), filesystem faults and <code>crash</code> recovery (<code>std.sim.fs</code>), plus UDP, <code>exec</code>, and S3 simulators.</p>
-          <ul>
-            <li>Run seeded sweeps with <code>hirsel test --sim --seeds N</code> or replay a single failure with <code>--seed S</code>.</li>
-            <li>Pair with <code>std.prop</code> shrinking, <code>hirsel test --coverage</code>, <code>std.refuse.sweep</code> refusal sweeps, coverage-steered campaigns, and external record/replay (<code>hirsel run --record</code> / <code>hirsel replay</code>).</li>
-          </ul>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/#6-deterministic-sim-clock-network-testing-and-property-laws">Cookbook &sect;6: Simulation &amp; laws &rarr;</a>
-            <a class="card-link" href="/docs/#record-and-replay">Record &amp; replay</a>
-          </div>
-        </article>
-
-        <article class="card" id="authority">
-          <div class="card-top"><h3>Capability security</h3><span class="card-tag">explicit grants &middot; no ambient I/O</span></div>
-          <p>Files, network, clocks, randomness, environment variables, secrets, child processes, foreign interfaces, and tasks arrive only as explicit parameters.</p>
-          <ul>
-            <li><code>Dir</code> resolves every Linux path traversal with <code>openat2(RESOLVE_BENEATH)</code> and no fallback.</li>
-            <li><code>--grant 'Net=...'</code> enforces explicit CIDR and port allowlists; <code>Secret</code> bytes remain unreadable to Hirsel code.</li>
-            <li>Missing grants fail before <code>main</code> with exit <code>103</code>, naming every ungranted parameter at once.</li>
-          </ul>
-          <p class="note">Honest boundaries: TLS uses <code>rustls</code>, child processes started through <code>Exec</code> are not confined, and Hirsel does not apply seccomp or Landlock.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/spec/capabilities/">Capabilities spec</a>
-            <button class="walk-btn" type="button" data-walk="authority">Walk this &rarr;</button>
-          </div>
-        </article>
-
-        <article class="card" id="local">
-          <div class="card-top"><h3>Content-addressed builds &amp; deploys</h3><span class="card-tag">local checking &middot; hash-addressed</span></div>
-          <p>Checking a definition reads only its own body and the signatures it names, backed by a per-definition Merkle cache so edits recheck only changed bodies and callers of changed signatures.</p>
-          <ul>
-            <li>Hash-addressed code with capability-typed purity: functions hold no ambient authority.</li>
-            <li><code>hirsel publish</code> and <code>hirsel deploy</code> transfer only missing code objects by hash; <code>hirsel.lock</code> pins dependencies by <code>sha256:</code> roots.</li>
-          </ul>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/spec/programs/#prog-10-code-addresses">Code addresses</a>
-            <button class="walk-btn" type="button" data-walk="local">Walk this &rarr;</button>
-          </div>
-        </article>
-
-        <article class="card" id="memory">
-          <div class="card-top"><h3>Memory, data layout &amp; tooling</h3><span class="card-tag">regions &middot; byte &amp; step bounds</span></div>
-          <p>Value semantics with declared representation: <code>region</code> arenas freed at once, <code>Columns[T]</code> struct-of-arrays storage, <code>Inline[T, N]</code>, portable <code>Simd[T, N]</code>, and nested <code>bound bytes</code> and <code>bound steps</code> limits that raise catchable <code>Capacity</code> or <code>OutOfTime</code>.</p>
-          <ul>
-            <li>Built-in <code>hirsel prof</code> for CPU sampling, compiler remarks, and exact replay memory profiles.</li>
-            <li>Cross-compile to <code>aarch64-unknown-linux-gnu</code> out of the box with the bundled link kit.</li>
-          </ul>
-          <p class="quiet">Selected <code>std</code> components carry Lean proofs.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/#tooling">Tooling &amp; cross-compile</a>
-            <button class="walk-btn" type="button" data-walk="memory">Walk this &rarr;</button>
-          </div>
-        </article>
-
-        <article class="card" id="fast">
-          <div class="card-top"><h3>Fast</h3><span class="card-tag">Cranelift &middot; LLVM</span></div>
-          <p>Native code via Cranelift (dev) and LLVM (<code>--release</code>), with no garbage collector. Headline ratios against Rust from the latest board (<code>48e50bad</code>, 2026-11-25; Hirsel keeps bounds, overflow, and step checks on vs Rust bounds-only):</p>
-          <div class="card-stats">
-            <div class="stat-box"><span class="sv">0.78&times;</span><span class="sl">AWFY insn (11/14)</span></div>
-            <div class="stat-box"><span class="sv">0.81&times;</span><span class="sl">LangArena s (32/50)</span></div>
-            <div class="stat-box"><span class="sv">0.91&times;</span><span class="sl">Warm edit compile</span></div>
-          </div>
-          <p class="quiet">Some rows trail Rust (e.g. <code>Json::Generate</code>, <code>LogParser</code>, compile instructions, Checkbox throughput/unsubscribed RSS), and the latest board reports <code>Passed: no</code>.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/benchmarks/">Full benchmarks &amp; methodology &rarr;</a>
-            <button class="walk-btn" type="button" data-walk="fast">Walk this &rarr;</button>
-          </div>
-        </article>
-
-        <article class="card" id="parallel">
-          <div class="card-top"><h3>Parallel</h3><span class="card-tag">shared-nothing tasks &amp; units</span></div>
-          <p>Tasks share nothing. Values move between tasks through <code>task.spawn</code>, bounded channels, or joins, and immutable sharing is explicit via <code>Arc</code>. For strict budget isolation, <code>task.spawn_unit</code> runs work in an independent memory-accounted unit.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/spec/tasks/">Tasks spec</a>
-            <button class="walk-btn" type="button" data-walk="parallel">Walk this &rarr;</button>
-          </div>
-        </article>
-      </div>
+  <footer class="foot-strip" id="footStrip" aria-label="Proof and install">
+    <div class="proof">
+      <a href="/benchmarks/">0.78&times; Rust instructions</a>
+      <span class="sep" aria-hidden="true">&middot;</span>
+      <span>explicit capabilities</span>
+      <span class="sep" aria-hidden="true">&middot;</span>
+      <span>deterministic replay</span>
+      <span class="sep hide-sm" aria-hidden="true">&middot;</span>
+      <a href="/gallery/" class="hide-sm">62k LOC in Hirsel</a>
+      <span class="sep" aria-hidden="true">&middot;</span>
+      <span class="ver">v0.2.0-pre</span>
     </div>
-  </section>
-
-  <section class="band band-top" id="built-on-top" aria-labelledby="built-heading">
-    <div class="band-inner">
-      <div class="band-head">
-        <p class="band-eyebrow"><span class="num">02</span> Built on Top, in Hirsel</p>
-        <h2 id="built-heading">Built on Top, in Hirsel</h2>
-        <p>These are not compiler magic or runtime primitives — they are ordinary Hirsel packages written in Hirsel itself on top of the core language, capabilities, and budgets above.</p>
-      </div>
-
-      <div class="stack-grid">
-        <article class="card" id="serve">
-          <div class="card-top"><h3>Serve &mdash; the durable server platform</h3><span class="card-tag">store &middot; runner &middot; platform</span></div>
-          <p>A batteries-included durable server stack composed of <code>store</code>, <code>runner</code>, <code>platform</code>, and the <code>hirsel host</code>, <code>hirsel deploy</code>, <code>hirsel dev</code>, and <code>hirsel sdk ts</code> CLI commands.</p>
-          <ul>
-            <li><strong>Durable storage:</strong> copy-on-write B+tree with a checksummed journal (single writer, no MVCC).</li>
-            <li><strong>Rich indexing &amp; projections:</strong> secondary, unique, aggregate, BM25 full-text (<code>search</code>), exact-vector (<code>vector</code>), and Hilbert-spatial (<code>spatial</code>) indexes; row TTL expiry; incremental projections.</li>
-            <li><strong>Migrations &amp; live sync:</strong> transactional <code>Migrate</code> and <code>preview_migration</code> (<code>hirsel dry-run</code>); live diff subscriptions; typed <code>Rooms</code>.</li>
-            <li><strong>TypeScript SDK:</strong> <code>hirsel sdk ts</code> generates typed clients with reconnect recovery and optimistic writes.</li>
-          </ul>
-          <p class="note scope"><strong>Single machine, pre-release.</strong> Single-writer transactions only — no MVCC, no multi-node clustering, and no automatic release rollback.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/#4-store-typed-table-secondary-index-and-transactions">Cookbook &sect;4: Store &rarr;</a>
-            <a class="card-link" href="/docs/spec/launch/">Launch &amp; deploy spec</a>
-          </div>
-        </article>
-
-        <article class="card" id="media">
-          <div class="card-top"><h3>Real-time media &amp; networking in pure Hirsel</h3><span class="card-tag">~62k lines &middot; no FFI</span></div>
-          <p>A complete real-time media and transport stack written in <strong>62,418 lines of pure Hirsel</strong> across 11 packages with zero <code>Foreign</code> code, so <code>hirsel test --sim</code> and recorded replay cover it end to end:</p>
-          <ul>
-            <li><strong>Transport &amp; security:</strong> DTLS 1.2 (<code>dtls</code>), SRTP/SRTCP (<code>srtp</code>), RTP/RTCP with RTX, BWE, and pacing (<code>rtp</code>), jitter buffer (<code>rtp_jitter</code>), STUN/ICE-lite (<code>stun_ice</code>), TURN client &amp; relay (<code>turn</code>), and RFC 9605 SFrame E2EE (<code>sframe</code>).</li>
-            <li><strong>WebRTC SFU &amp; containers:</strong> <code>webrtc_sfu</code> (simulcast, VP9/AV1 SVC, dynacast, Opus RED, E2EE clear-range routing), codec bitstream parsers (<code>media_bits</code>), Ogg/MP4/WebM containers (<code>media_container</code>), and room recording (<code>media_record</code>).</li>
-          </ul>
-          <p class="note"><strong>Thin C FFI wrappers:</strong> <code>opus</code>, <code>av1</code>, <code>h264</code>, <code>image_jpeg</code>, and <code>image_webp</code> are thin C FFI wrappers behind <code>Foreign</code> (trusted native code).</p>
-          <p class="quiet"><strong>Shipped in the toolchain bundle</strong> (17 packages; bind by <code>major = 1</code>, per <code>tools/buck2/defs.bzl</code>):</p>
-          <div class="pkg-list">
-            <span class="pkg-chip bundle">std</span><span class="pkg-chip bundle">store</span><span class="pkg-chip bundle">runner</span><span class="pkg-chip bundle">platform</span><span class="pkg-chip bundle">search</span><span class="pkg-chip bundle">mcp</span><span class="pkg-chip bundle">webrtc_sfu</span><span class="pkg-chip bundle">dtls</span><span class="pkg-chip bundle">srtp</span><span class="pkg-chip bundle">rtp</span><span class="pkg-chip bundle">rtp_jitter</span><span class="pkg-chip bundle">turn</span><span class="pkg-chip bundle">stun_ice</span><span class="pkg-chip bundle">sframe</span><span class="pkg-chip bundle">media_bits</span><span class="pkg-chip bundle">media_container</span><span class="pkg-chip bundle">media_record</span>
-          </div>
-          <p class="quiet">Additional in-repo packages under <code>core/programs/</code> (bind by path): <code>vector</code>, <code>spatial</code>, <code>video_packager</code>, <code>image_core</code>, <code>postgres</code>, <code>jwtbind</code>, <code>toml</code>, <code>yaml</code>, <code>archive</code>, <code>tz</code>, <code>xml</code>, and the C FFI wrappers.</p>
-          <div class="card-foot">
-            <a class="card-link" href="/docs/spec/webrtc/">WebRTC SFU spec</a>
-            <a class="card-link" href="/docs/spec/dtls/">DTLS &amp; SRTP spec</a>
-          </div>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <footer class="site-foot">
-    <div class="foot-inner">
-      <div class="foot-left">
-        <span class="wm wmfont">hirsel</span>
-        <p>Linux x86_64 (glibc 2.28+) &middot; Apple Silicon macOS in progress &middot; MIT License</p>
-      </div>
-      <nav class="foot-links" aria-label="Footer">
-        <a href="/docs/">Learn &amp; Cookbook</a>
-        <a href="/docs/std/">Standard library</a>
-        <a href="/docs/spec/">Spec reference</a>
-        <a href="/benchmarks/">Benchmarks</a>
-        <a href="/llms.txt">llms.txt</a>
-        <a href="https://github.com/SamGalanakis/hirsel">GitHub</a>
-      </nav>
-    </div>
+    <button class="install-btn" id="copyInstall" type="button" title="Copy Linux x86_64 install command" aria-live="polite">
+      <code>curl -fsSL https://hirsel.ai/install.sh | sh</code>
+      <svg class="ic-copy" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"/></svg>
+      <svg class="ic-ok" viewBox="0 0 16 16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.2 8.4 6.5 11.7 12.8 4.8"/></svg>
+      <span class="cp-done" aria-hidden="true">Copied</span>
+    </button>
   </footer>
-</main>
+</div>
 
 <section class="panel" id="panel" aria-live="polite" hidden>
   <h2 id="pTitle"></h2>
@@ -664,7 +430,13 @@ fn fill() -&gt; Result[List[u64], Capacity] {
   <div class="walk">
     <button id="prevBtn"><i class="ar" aria-hidden="true">&larr;</i> <span></span></button>
     <button class="nx" id="nextBtn"><span></span> <i class="ar" aria-hidden="true">&rarr;</i></button>
-    <a class="nx" id="endLink" href="https://github.com/samgalanakis/hirsel" hidden>Source on GitHub <i class="ar" aria-hidden="true">&rarr;</i></a>
+    <span class="end-links" id="endLinks" hidden><a href="/gallery/">Gallery</a><a href="/benchmarks/">Benchmarks</a><a href="/docs/">Docs</a></span>
+  </div>
+  <div class="handoff" id="handoff" hidden>
+    <span>Next:</span>
+    <a href="/gallery/">Gallery</a>
+    <a href="/benchmarks/">Benchmarks</a>
+    <a href="/docs/">Docs</a>
   </div>
 </section>
 
@@ -675,7 +447,7 @@ fn fill() -&gt; Result[List[u64], Capacity] {
     <span class="ticks" id="ticks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>
   </button>
   <button class="step" id="bNext"><i class="ar" aria-hidden="true">&rarr;</i></button>
-  <a class="step" id="bEnd" href="https://github.com/samgalanakis/hirsel" aria-label="Source on GitHub" hidden><svg viewBox="0 0 16 16" aria-hidden="true" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
+  <a class="step" id="bEnd" href="/gallery/" aria-label="Gallery" hidden><i class="ar" aria-hidden="true">&rarr;</i></a>
 </nav>
 
 <dialog class="list" id="list" aria-label="All views">
@@ -705,23 +477,25 @@ const viewOf = h => ALIAS[h] || h;
 const COPY = {
   hill: ['The hill', '', ''],
   safe: ['Safe', 'Nothing is left lying on the hill.',
-    'An accepted program has no undefined behaviour, no data races, no use after free and no leaked resources. Native C libraries called behind Foreign are trusted, not checked.'],
+    'An accepted program has no undefined behaviour, no data races, no use after free and no leaked resources. Values are freed deterministically with zero GC. Native C libraries called behind Foreign are trusted, not checked.'],
   parallel: ['Parallel', 'Every task keeps to its own ground.',
-    'Tasks share nothing. A value passes from one task to another only by moving through a spawn, a channel or a join. The only memory two tasks can both read is the immutable payload of an Arc, and spawn_unit isolates memory budgets across units.'],
+    'Tasks share nothing. A value passes from one task to another only by moving through a spawn, a channel or a join. The only memory two tasks can both read is the immutable payload of an Arc, and task.spawn_unit isolates memory budgets across units.'],
   memory: ['Memory', 'The type decides who frees.',
-    'An ordinary type has one owner, freed when its owner leaves scope. Data that dies together lives in one region and is freed at once; Columns[T] stores structs by column. Sharing is opt-in and counted, and a move never copies owned data.'],
+    'An ordinary type has one owner, freed when its owner leaves scope. Data that dies together lives in one region and is freed at once; Columns[T], Inline[T, N] and portable Simd[T, N] declare exact layout. Sharing is opt-in and counted, a move never copies owned data, and selected std components carry Lean proofs.'],
   bounded: ['Bounded', 'A full patch refuses the next mouthful.',
     'Every allocation is made against a byte limit (bound bytes) and loops can be capped by steps (bound steps). Running out raises Capacity or OutOfTime, ordinary failures the program can catch and recover from.'],
   deterministic: ['Deterministic', 'One run, every time.',
-    'Given the same outside inputs, replay values and limits, every run of one build behaves identically — down to its steps and where it runs out of memory. Across engines and builds, values, output and host effects match. Excludes Foreign (FFI) code and runs stopped from outside.'],
+    ['Given the same outside inputs, replay values and limits, every run of one build behaves identically — down to steps and OOM. Excludes Foreign (FFI) code and runs stopped from outside.',
+      ['replay', 'Record with hirsel run --record and replay with hirsel replay at zero grants; values, output and host effects match across engines and builds.'],
+      ['simulate', 'Swap real capabilities for std.sim (virtual clock, network partitions, filesystem crashes, UDP, exec, S3) and sweep seeds with hirsel test --sim, std.prop shrinking, --coverage, and refusal sweeps.']]],
   authority: ['Explicit authority', 'Only a sheep handed the key goes through the gate.',
-    'Files, network, clocks, randomness, tasks, secrets and output are values passed as parameters. Linux Dir uses openat2(RESOLVE_BENEATH) with no fallback, Net uses explicit allowlists, Secret is unreadable, and missing grants exit 103 naming every missing grant. TLS uses rustls; Exec children are not confined.'],
+    'Files, network, clocks, randomness, env, tasks, secrets, Exec and Foreign arrive only as parameters. Linux Dir uses openat2(RESOLVE_BENEATH) with no fallback, Net uses explicit CIDR/port allowlists, Secret is unreadable, and missing grants exit 103 listing every missing grant. TLS uses rustls; Exec children are not confined and Hirsel does not apply seccomp or Landlock.'],
   local: ['Local', 'Each sheep needs only its own ground.',
     'Checking a definition reads only its own body and the signatures it names, backed by a per-definition Merkle cache and hash-addressed code. hirsel publish and deploy transfer only missing objects by hash, and hirsel.lock pins sha256 roots.'],
   fast: ['Fast', 'A straight line across the hill.',
-    ['Native code through Cranelift and LLVM, with no garbage collector. Latest board (48e50bad, Passed: no): 0.78× AWFY instructions (11/14), 0.81× LangArena wall time (32/50), and 0.91× warm edit compile vs Rust, keeping bounds, overflow and step checks on.',
-      ['build', 'Per-definition content-addressed caching checks and lowers each definition once, so an edit rechecks only that definition and callers of a changed signature.'],
-      ['run', 'Every type declares its representation, regions free at once, and Columns[T] / Simd[T, N] keep hot loops tight. See /benchmarks/ for every suite, losing row and caveat.']]],
+    ['Native code via Cranelift (dev) and LLVM (--release), with no garbage collector. Latest board (48e50bad, Passed: no): 0.78× AWFY instructions (11/14), 0.81× LangArena wall time (32/50), and 0.91× warm edit compile vs Rust, keeping bounds, overflow and step checks on.',
+      ['build', 'Per-definition content-addressed caching checks each definition once; ships built-in hirsel prof (CPU + exact replay memory) and out-of-the-box AArch64 Linux cross-compilation.'],
+      ['run', 'Declared layouts, regions, Columns[T] and Simd[T, N] keep hot loops tight. Some rows still trail Rust (Json::Generate, LogParser, compile instructions, Checkbox throughput/unsubscribed RSS).']]],
 };
 /* In code: each property as real Hirsel, opened on request. Every program here is checked by
    `hirsel check` as shown (refusals explain why the checker rejects the line); the shell lines
@@ -1169,7 +943,9 @@ const SC = {};
 SC.hill = (g) => {
   const st = document.getElementById('heroStage').getBoundingClientRect();
   const lr = document.getElementById('land').getBoundingClientRect();
+  const fs = document.getElementById('footStrip').getBoundingClientRect();
   const land = { left: lr.left - st.left, right: lr.right - st.left, top: lr.top - st.top };
+  const footTop = fs.height > 0 ? fs.top - st.top : H;
   const ex = { l: land.left - 30, r: land.right + 96, t: land.top - (MOB ? 30 : 34) };
   /* hefting: no two sheep get edge-neighbouring diamonds, so every patch has open hill round it.
      A big screen sizes the patches so the whole flock grazes the near slope. A phone keeps them
@@ -1178,10 +954,11 @@ SC.hill = (g) => {
   let cw = MOB ? (W - 24) / 4.4 : Math.max(W, H) / 9, cells;
   for (let it = 0; it < 60; it++) {
     const ch = cw * .5, cand = [], step = cw * .5;
+    const maxY = Math.min(H - ch * .6, footTop - ch * .65);
     /* on a phone the lattice is centred and every patch lies whole inside the width */
     const nx = MOB ? Math.floor((W - 2 * (cw * .45 + 6)) / step) + 1 : 0, x0 = MOB ? (W - (nx - 1) * step) / 2 : cw * .5;
     for (let j = 0; ; j++) {
-      const y = g.rTo + ch * .9 + j * ch * .5; if (y > H - ch * .6) break;
+      const y = g.rTo + ch * .9 + j * ch * .5; if (y > maxY) break;
       for (let i = 0; ; i++) {
         const x = x0 + i * step; if (MOB ? i >= nx : x > W - cw * .4) break;
         if ((i + j) % 2) continue;
@@ -1202,7 +979,7 @@ SC.hill = (g) => {
      direction. A run breaks off here and there, and some breaks are gates between two posts. */
   const Y0 = g.rTo + ch * .9, cp = (A, B) => [cw * .5 + (A - B) * cw * .5, Y0 + (A + B) * ch * .5];
   const segs = [], posts = [], top = g.rTo + 30;
-  const inside = p => p[0] > -cw && p[0] < W + cw && p[1] > top && p[1] < H + ch && !(p[0] > ex.l - 12 && p[0] < ex.r && p[1] > ex.t - 12);
+  const inside = p => p[0] > -cw && p[0] < W + cw && p[1] > top && p[1] < footTop - 8 && !(p[0] > ex.l - 12 && p[0] < ex.r && p[1] > ex.t - 12);
   const dir = [[1, 0], [0, 1]], lim = Math.ceil((W / cw + H / ch) * 1.2) + 4;
   dir.forEach(([dA, dB], d) => {
     for (let m = -lim, gap = 0; m < lim; m += 4 + (hh(m, 40 + d) > .5 ? 1 : 0)) {
@@ -1924,10 +1701,9 @@ let snap = null, hop = new Float32Array(N);
 
 function resize() {
   const stage = document.getElementById('heroStage');
-  const inWalk = document.body.classList.contains('in-walk');
   DPR = Math.min(2, window.devicePixelRatio || 1);
-  W = inWalk ? innerWidth : (stage ? stage.clientWidth : innerWidth);
-  H = inWalk ? innerHeight : (stage ? stage.clientHeight : innerHeight);
+  W = stage ? stage.clientWidth : innerWidth;
+  H = stage ? stage.clientHeight : innerHeight;
   MOB = W <= 700; STACK = W <= 900; VS = Math.max(1, Math.min(1.3, W / 1280, H / 900));
   cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   makeGrain(); SKY = null;
@@ -2015,9 +1791,9 @@ function setView(v, first) {
   arr = first && !reduced ? 0 : -1;
   /* first arrival: the words come up with the flock, the name first, the way in last */
   if (first) {
-    const lk = document.querySelector('header .links'), wk = $('panel').querySelector('.walk');
-    if (v === 'hill') textIn([...$('land').children, lk], [8, 36, 42, 54, 60]);
-    else textIn([$('wm'), $('idx'), lk, $('pTitle'), $('slot'), $('det'), $('deep'), wk, $('bar')], [8, 12, 16, 30, 35, 40, 42, 45, 45]);
+    const nav = $('ovNav'), wk = $('panel').querySelector('.walk');
+    if (v === 'hill') textIn([...$('land').children, nav, $('footStrip')], [8, 36, 42, 54, 48, 62]);
+    else textIn([$('wm'), $('idx'), nav, $('pTitle'), $('slot'), $('det'), $('deep'), wk, $('handoff'), $('bar')], [8, 12, 16, 30, 35, 40, 42, 45, 48, 45]);
   }
   if (instant) { pan = panB; rb = rbB; }
   if (!instant) plan();
@@ -2126,6 +1902,7 @@ function fillPanel(root, v) {
   wb[0].hidden = !pv; wb[0].querySelector('span').textContent = pv ? COPY[pv][0] : '';
   wb[1].hidden = !nx; wb[1].querySelector('span').textContent = nx ? COPY[nx][0] : '';
   wb[2].hidden = !!nx;
+  const ho = q('.handoff'); if (ho) ho.hidden = !!nx;
   q('.det').hidden = v !== 'deterministic' || reduced;
   /* the snippet: one line per span, its tokens set as text; both readings are always laid out */
   const k = CODE[v], pre = q('pre');
@@ -2194,8 +1971,8 @@ function renderDom(v, quiet) {
   const hill = v === 'hill', i = VIEWS.indexOf(v), c = COPY[v], wasHill = $('panel').hidden;
   document.documentElement.classList.toggle('walk-mode', !hill);
   document.body.classList.toggle('in-walk', !hill);
-  $('ovNav').hidden = !hill; $('idx').hidden = hill; $('land').hidden = !hill; $('overview').hidden = !hill;
-  $('panel').hidden = hill; $('bar').hidden = hill; $('menuBtn').hidden = !hill;
+  $('wm').hidden = hill; $('idx').hidden = hill; $('land').hidden = !hill; $('footStrip').hidden = !hill;
+  $('panel').hidden = hill; $('bar').hidden = hill;
   [...idxBtns, ...listBtns].forEach(b => { const on = b.dataset.v === v; b.classList.toggle('on', on); if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
   if (!hill) {
     fillPanel($('panel'), v);
@@ -2208,8 +1985,8 @@ function renderDom(v, quiet) {
   }
   $('det').hidden = v !== 'deterministic' || reduced;
   if (quiet) return;
-  if (hill) textIn([...$('land').children], 26, 5);
-  else textIn([...(wasHill ? [$('wm'), $('idx')] : []), $('pTitle'), $('slot'), $('det'), $('deep'), $('panel').querySelector('.walk'), ...(wasHill ? [$('bar')] : [])], view === null || arr >= 0 ? 20 : 30, 5);
+  if (hill) textIn([...$('land').children, $('footStrip')], 26, 5);
+  else textIn([...(wasHill ? [$('wm'), $('idx')] : []), $('pTitle'), $('slot'), $('det'), $('deep'), $('panel').querySelector('.walk'), $('handoff'), ...(wasHill ? [$('bar')] : [])], view === null || arr >= 0 ? 20 : 30, 5);
 }
 function go(d) { setView(VIEWS[Math.max(0, Math.min(VIEWS.length - 1, VIEWS.indexOf(view) + d))]); }
 
@@ -2234,9 +2011,8 @@ addEventListener('resize', rebuild);
 /* headings reflow when the web fonts arrive; re-measure the panel and landing block then */
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { SKY = null; if (tr >= 1) rebuild(); else refit = true; });
 
-$('wm').addEventListener('click', () => { if (view === 'hill') window.scrollTo({ top: 0, behavior: 'smooth' }); else setView('hill'); });
+$('wm').addEventListener('click', () => setView('hill'));
 $('walkIn').addEventListener('click', () => go(1));
-document.querySelectorAll('[data-walk]').forEach(b => b.addEventListener('click', () => setView(b.dataset.walk)));
 $('prevBtn').addEventListener('click', () => go(-1));
 $('nextBtn').addEventListener('click', () => go(1));
 idxBtns.forEach(b => b.addEventListener('click', () => setView(b.dataset.v)));
@@ -2251,11 +2027,10 @@ function openList(from) {
 list.addEventListener('close', () => {
   if (!opener) return; opener.setAttribute('aria-expanded', 'false');
   /* a jump can hide the button that opened the list; then focus goes to the one that shows now */
-  const back = opener.offsetParent ? opener : view === 'hill' ? $('menuBtn') : $('bNow'); opener = null;
-  if (back.offsetParent) back.focus({ preventScroll: true });
+  const back = opener.offsetParent ? opener : view === 'hill' ? $('walkIn') : $('bNow'); opener = null;
+  if (back && back.offsetParent) back.focus({ preventScroll: true });
 });
 $('bNow').addEventListener('click', e => openList(e.currentTarget));
-$('menuBtn').addEventListener('click', e => openList(e.currentTarget));
 $('listX').addEventListener('click', () => list.close());
 list.addEventListener('click', e => { const r = list.getBoundingClientRect(); if (e.target === list && (e.clientY < r.top || e.clientX < r.left || e.clientX > r.right)) list.close(); });
 listBtns.forEach(b => b.addEventListener('click', () => { const v = b.dataset.v; list.close(); setView(v); }));
@@ -2365,41 +2140,23 @@ const nearRed = (x, y) => { const r = rend[REDI]; return Math.hypot(x - r.x, y -
 cv.addEventListener('click', e => { if (view === 'hill' && nearRed(e.clientX, e.clientY)) go(1); });
 cv.addEventListener('mousemove', e => { cv.style.cursor = view === 'hill' && nearRed(e.clientX, e.clientY) ? 'pointer' : ''; });
 
-const AGENT_TXT = [
-  'Hirsel docs and install for coding agents:',
-  'Authority rule: Always run `hirsel primer` from your installed binary as the exact authority for your installed version.',
-  '- Index: https://hirsel.ai/llms.txt',
-  '- Full single-file bundle: https://hirsel.ai/llms-full.txt',
-  '- Primer (whole language in one page): https://hirsel.ai/primer.md',
-  '- Cookbook (tested recipes): https://hirsel.ai/cookbook.md',
-  '- Standard library index: https://hirsel.ai/api-index.md',
-  '- Specification reference: https://hirsel.ai/docs/spec/',
-  '- Benchmarks: https://hirsel.ai/benchmarks/',
-  '- Agent skill: https://github.com/SamGalanakis/hirsel/blob/main/skills/hirsel/SKILL.md',
-  '- Install (Linux x86_64, glibc 2.28+; Apple Silicon macOS in progress): curl -fsSL https://hirsel.ai/install.sh | sh',
-].join('\n');
+const INSTALL_CMD = 'curl -fsSL https://hirsel.ai/install.sh | sh';
 let copyTimer = 0;
-$('copyAgent').addEventListener('click', () => {
-  const b = $('copyAgent'), done = () => {
+$('copyInstall').addEventListener('click', () => {
+  const b = $('copyInstall'), done = () => {
     b.classList.add('ok');
-    b.querySelector('.idle').setAttribute('aria-hidden', 'true');
-    b.querySelector('.done').removeAttribute('aria-hidden');
     clearTimeout(copyTimer);
-    copyTimer = setTimeout(() => {
-      b.classList.remove('ok');
-      b.querySelector('.idle').removeAttribute('aria-hidden');
-      b.querySelector('.done').setAttribute('aria-hidden', 'true');
-    }, 1800);
+    copyTimer = setTimeout(() => b.classList.remove('ok'), 1800);
   };
   const fallback = () => {
     const t = document.createElement('textarea');
-    t.value = AGENT_TXT; t.setAttribute('readonly', '');
+    t.value = INSTALL_CMD; t.setAttribute('readonly', '');
     t.style.cssText = 'position:fixed;opacity:0;pointer-events:none';
     document.body.append(t); t.select();
     try { if (document.execCommand('copy')) done(); } finally { t.remove(); }
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(AGENT_TXT).then(done, fallback);
+    navigator.clipboard.writeText(INSTALL_CMD).then(done, fallback);
   } else fallback();
 });
 
