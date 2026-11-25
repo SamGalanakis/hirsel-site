@@ -1,0 +1,250 @@
+// Laws of the site server over the fixture `fixture` writes into the test's own directory:
+// index.html, docs/index.html, docs/guide/index.html, install.sh, notes.md, fonts/a.woff2 and
+// a _headers file. Every expected value below is read off that tree and its _headers by hand.
+// Links are not covered here, since std has no way to make one. `load` skips them because
+// std.dir.walk reports a link without following it.
+
+const RULES: String = "# Rules apply in order; a later field of the same name replaces an earlier one.\n/*\n  X-Content-Type-Options: nosniff\n\n/fonts/*\n  Cache-Control: public, max-age=2592000\n\n/*.md\n  Content-Type: text/markdown; charset=utf-8\n\n/notes.md\n  X-Content-Type-Options: none\n"
+
+fn put(root: Dir, name: String, body: String) waits {
+    result.unwrap(std.file.write(root, name, string.as_bytes(body)))
+}
+
+fn fixture(root: Dir) -> Site waits {
+    result.unwrap(std.dir.create_dir(root, "docs"))
+    result.unwrap(std.dir.create_dir(root, "docs/guide"))
+    result.unwrap(std.dir.create_dir(root, "fonts"))
+    put(root, "index.html", "<h1>home</h1>\n")
+    put(root, "docs/index.html", "<h1>docs</h1>\n")
+    put(root, "docs/guide/index.html", "<h1>guide</h1>\n")
+    put(root, "install.sh", "#!/bin/sh\necho hi\n")
+    put(root, "notes.md", "# notes\n")
+    put(root, "fonts/a.woff2", "wOF2")
+    put(root, "_headers", RULES)
+    result.unwrap(load(root))
+}
+
+// The parts of spec between `|` separators: "docs|" is ["docs", ""] and "" is [""].
+fn segs(spec: String) -> List[String] {
+    let mut out: List[String] = list.new()
+    let mut at: u64 = 0
+    while let Some(i) = string.find(spec, at, "|") {
+        list.push(mut out, string.from(string.slice(spec, at, i)))
+        at = i + 1
+    }
+    list.push(mut out, string.from(string.slice(spec, at, string.byte_len(spec))))
+    take out
+}
+
+fn show(r: Resolved) -> String {
+    let mut s = string.new()
+    match r {
+        Serve(key) => {
+            string.push(mut s, "Serve ")
+            string.push(mut s, key)
+        },
+        Redirect(to) => {
+            string.push(mut s, "Redirect ")
+            string.push(mut s, to)
+        },
+        Missing => string.push(mut s, "Missing"),
+        Refused => string.push(mut s, "Refused"),
+    }
+    s
+}
+
+fn expect(s: Site, spec: String, trailing: bool, want: String) {
+    let parts: List[String] = if string.byte_len(spec) == 0 && !trailing {
+        list.new()
+    } else {
+        segs(spec)
+    }
+    let got = show(resolve(s, parts, trailing))
+    if got != want {
+        let mut line = string.from("resolve /")
+        string.push(mut line, string.join(parts, "/"))
+        string.push(mut line, ": got ")
+        string.push(mut line, got)
+        string.push(mut line, ", want ")
+        string.push(mut line, want)
+        fail(take line)
+    }
+}
+
+// Clean URLs as the Cloudflare static assets server answers them with auto-trailing-slash:
+// a directory serves its index.html only under its trailing-slash URL, its bare and
+// index.html URLs redirect there, a file has no trailing-slash form, the rules file is never
+// served, and no decoded segment can step out of the root.
+@test
+fn law_resolve(files: Dir) -> Result[(), ()] waits {
+    let s = fixture(files)
+    expect(s, "", false, "Serve index.html")
+    expect(s, "", true, "Serve index.html")
+    expect(s, "index.html", false, "Redirect /")
+    expect(s, "docs", false, "Redirect /docs/")
+    expect(s, "docs|", true, "Serve docs/index.html")
+    expect(s, "docs|index.html", false, "Redirect /docs/")
+    expect(s, "docs|guide", false, "Redirect /docs/guide/")
+    expect(s, "docs|guide|", true, "Serve docs/guide/index.html")
+    expect(s, "install.sh", false, "Serve install.sh")
+    expect(s, "install.sh|", true, "Missing")
+    expect(s, "fonts|a.woff2", false, "Serve fonts/a.woff2")
+    expect(s, "fonts|", true, "Missing")
+    expect(s, "fonts", false, "Missing")
+    expect(s, "nope", false, "Missing")
+    expect(s, "docs||guide", false, "Missing")
+    expect(s, "_headers", false, "Missing")
+    expect(s, "..", false, "Refused")
+    expect(s, "docs|..|..|hirsel.toml", false, "Refused")
+    expect(s, ".", false, "Refused")
+    expect(s, "a\u{0}b", false, "Refused")
+    expect(s, "docs/index.html", false, "Refused")
+    expect(s, "a\\b", false, "Refused")
+    Ok(())
+}
+
+fn expect_fields(rules: List[Rule], url: String, want: String) {
+    let got = declared(rules, url)
+    let mut shown: List[String] = list.new()
+    for f in got {
+        let mut one = string.from(f.name)
+        string.push(mut one, ": ")
+        string.push(mut one, f.value)
+        list.push(mut shown, take one)
+    }
+    if string.join(shown, "|") != want {
+        let mut line = string.from("fields of ")
+        string.push(mut line, url)
+        string.push(mut line, ": got [")
+        string.push(mut line, string.join(shown, " | "))
+        string.push(mut line, "]")
+        fail(take line)
+    }
+}
+
+// _headers as Cloudflare reads it: `*` matches any run of bytes (an empty one and `/`
+// included), every matching rule adds its fields in order, and a later rule's field of the
+// same name replaces the earlier one.
+@test
+fn law_headers(files: Dir) -> Result[(), ()] waits {
+    let s = fixture(files)
+    expect_fields(s.rules, "/", "X-Content-Type-Options: nosniff")
+    expect_fields(s.rules, "/fonts/a.woff2", "X-Content-Type-Options: nosniff|Cache-Control: public, max-age=2592000")
+    expect_fields(s.rules, "/fonts/", "X-Content-Type-Options: nosniff|Cache-Control: public, max-age=2592000")
+    expect_fields(s.rules, "/fontsx", "X-Content-Type-Options: nosniff")
+    expect_fields(s.rules, "/docs/notes.md", "X-Content-Type-Options: nosniff|Content-Type: text/markdown; charset=utf-8")
+    expect_fields(s.rules, "/notes.md", "X-Content-Type-Options: none|Content-Type: text/markdown; charset=utf-8")
+    if !glob("/*.png", "/a/b.png") || !glob("/favicon.*", "/favicon.ico") || glob("/llms.txt", "/llms.txt/") || glob("/*.png", "/a.png/x") {
+        fail("glob")
+    }
+    if let Ok(_) = parse_rules(string.from("  Cache-Control: no-store\n")) {
+        fail("a field before any pattern is refused")
+    }
+    Ok(())
+}
+
+type ServerJob: send {
+    listener: Listener,
+    clock: Clock,
+    tasks: Tasks,
+    site: Site
+}
+
+fn serve_fixture(take job: ServerJob) waits {
+    let ServerJob(listener: take listener, clock: c, tasks: tasks, site: take loaded) = take job
+    let mut listeners: List[Listener] = list.new()
+    list.push(mut listeners, take listener)
+    let Some(take table) = routes() else {
+        fail("routes")
+    }
+    let _ = std.http.serve(take listeners, c, tasks, std.http.defaults(), take table, take loaded)
+}
+
+type Answer {
+    status: u16,
+    fields: List[String],
+    body: Bytes
+}
+
+fn ask(n: Net, addr: Addr, c: Clock, take method: String, take target: String) -> Answer waits {
+    let deadline = clock.deadline_after_ms(host.mono_ns(c), 5000)
+    let req = std.http_client.Request(method: method, target: target, headers: list.new(), body: Fixed(0))
+    let mut client = result.unwrap(std.http_client.dial(n, addr, "127.0.0.1", c, req, deadline))
+    result.unwrap(std.http_client.finish_request(mut client, 1024))
+    let (status, take fields) = {
+        let head = std.http_client.head(client)
+        let mut fields: List[String] = list.new()
+        for i in 0u64 .. std.http_client.field_count(head) {
+            let Some((name, value)) = std.http_client.field_at(head, i) else {
+                break
+            }
+            let mut one = string.to_lower(result.unwrap(string.from_utf8(std.http.copy_bytes(name))))
+            string.push(mut one, ": ")
+            string.push(mut one, result.unwrap(string.from_utf8(std.http.copy_bytes(value))))
+            list.push(mut fields, take one)
+        }
+        (std.http_client.status(head), take fields)
+    }
+    let mut body: Bytes = list.with_capacity(4096)
+    while result.unwrap(std.http_client.read(mut client, mut body)) != 0 {}
+    std.http_client.close(take client)
+    Answer(status: status, fields: take fields, body: take body)
+}
+
+fn has(a: Answer, field: String) -> bool {
+    for f in a.fields {
+        if f == field {
+            return true
+        }
+    }
+    false
+}
+
+// What only the wire shows: HEAD keeps GET's head and drops the body, a redirect keeps the
+// query, the rules' fields reach every response, the health check answers, and a raw `..`
+// target never reaches a file.
+@test
+fn law_wire(files: Dir, n: Net, c: Clock, tasks: Tasks) -> Result[(), ()] waits {
+    let loaded = fixture(files)
+    let (take listener, addr) = result.unwrap(host.listen(n, Addr(ip: V4(2130706433), port: 0), 8))
+    let server = task.spawn(tasks, bytes 16777216, ServerJob(listener: take listener, clock: c, tasks: tasks, site: take loaded), serve_fixture)
+
+    let got = ask(n, addr, c, "GET", "/")
+    if got.status != 200 || got.body != b"<h1>home</h1>\n" || !has(got, "content-type: text/html; charset=utf-8") || !has(got, "cache-control: public, max-age=0, must-revalidate") || !has(got, "x-content-type-options: nosniff") {
+        fail("GET /")
+    }
+    let head = ask(n, addr, c, "HEAD", "/")
+    if head.status != 200 || list.len(head.body) != 0 || !has(head, "content-length: 14") || !has(head, "content-type: text/html; charset=utf-8") {
+        fail("HEAD /")
+    }
+    let moved = ask(n, addr, c, "GET", "/docs?x=1")
+    if moved.status != 307 || !has(moved, "location: /docs/?x=1") || !has(moved, "x-content-type-options: nosniff") {
+        fail("GET /docs?x=1")
+    }
+    let font = ask(n, addr, c, "GET", "/fonts/a.woff2")
+    if font.status != 200 || !has(font, "content-type: font/woff2") || !has(font, "cache-control: public, max-age=2592000") || has(font, "cache-control: public, max-age=0, must-revalidate") {
+        fail("GET /fonts/a.woff2")
+    }
+    let notes = ask(n, addr, c, "GET", "/notes.md")
+    if notes.status != 200 || !has(notes, "content-type: text/markdown; charset=utf-8") || !has(notes, "x-content-type-options: none") {
+        fail("GET /notes.md")
+    }
+    let healthz = ask(n, addr, c, "GET", "/healthz")
+    if healthz.status != 200 || healthz.body != b"ok\n" || !has(healthz, "cache-control: no-store") {
+        fail("GET /healthz")
+    }
+    let missing = ask(n, addr, c, "GET", "/nope")
+    if missing.status != 404 || !has(missing, "x-content-type-options: nosniff") {
+        fail("GET /nope")
+    }
+    let up = ask(n, addr, c, "GET", "/docs/../../hirsel.toml")
+    if up.status != 400 && up.status != 404 {
+        fail("GET /docs/../../hirsel.toml")
+    }
+    let post = ask(n, addr, c, "POST", "/")
+    if post.status != 405 {
+        fail("POST /")
+    }
+    let _ = task.cancel_join(take server)
+    Ok(())
+}

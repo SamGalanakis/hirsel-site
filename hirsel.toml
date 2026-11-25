@@ -1,0 +1,33 @@
+[package]
+name = "hirsel_site"
+major = 1
+charge = "charge-v1"
+
+[sources]
+"src/main.hirsel" = "main"
+"src/site.hirsel" = "site"
+
+[dependencies]
+std = { major = 1 }
+
+# The server's whole authority: listen on any IPv4 address, read the built site below
+# _site/ (relative to where the executable starts), and read its three settings.
+[program]
+limit = 268435456
+grants = [
+  "Net=Listen 0.0.0.0/0 1-65535",
+  "Clock",
+  "Tasks",
+  "Env=PORT,BUCKET_NAME,AWS_ENDPOINT_URL_S3",
+  "Process",
+  "Stderr",
+]
+dirs = ["_site"]
+
+[tests]
+limit = 134217728
+grants = ["Clock", "Tasks", "Net=Listen 127.0.0.1/32 0-65535;Connect 127.0.0.1/32 1-65535"]
+dirs = ["."]
+
+[tests.sources]
+"tests/site_laws.hirsel" = "site"

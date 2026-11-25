@@ -1,0 +1,377 @@
+// A built site served from memory. `load` reads every regular file below a Dir once, at
+// startup, and the `_headers` file beside them. `resolve` maps a request path to a file with
+// clean URLs (a directory answers with its index.html, `/dir` and `/dir/index.html` redirect
+// to `/dir/`), and `fields` gives the response fields the `_headers` rules declare for a path.
+
+/// The cache policy of a file no `_headers` rule gives one: revalidate on every use.
+pub const DEFAULT_CACHE: String = "public, max-age=0, must-revalidate"
+
+/// The rules file. It configures the server and is never served.
+pub const HEADERS_FILE: String = "_headers"
+
+/// One file of the site.
+pub type Asset: shareable + send {
+    body: Arc[Bytes],
+    media: String
+}
+
+/// One response field.
+pub type Field: shareable + send {
+    name: String,
+    value: String
+}
+
+/// One `_headers` block: a URL path pattern, where `*` matches any bytes, and the fields it adds.
+pub type Rule: shareable + send {
+    pattern: String,
+    fields: List[Field]
+}
+
+/// The site: files by their path below the root (`docs/index.html`), and the `_headers` rules.
+pub type Site: shareable + send {
+    files: Map[String, Asset],
+    rules: List[Rule]
+}
+
+/// Where a request path leads.
+pub type Resolved = Serve(String) | Redirect(String) | Missing | Refused
+
+/// The media type of a file, by its extension.
+pub fn media_type(path: String) -> String {
+    let types = [
+        (".html", "text/html; charset=utf-8"),
+        (".css", "text/css; charset=utf-8"),
+        (".js", "text/javascript; charset=utf-8"),
+        (".json", "application/json"),
+        (".svg", "image/svg+xml"),
+        (".png", "image/png"),
+        (".ico", "image/x-icon"),
+        (".woff2", "font/woff2"),
+        (".txt", "text/plain; charset=utf-8"),
+        (".md", "text/markdown; charset=utf-8"),
+        (".xml", "application/xml; charset=utf-8"),
+        (".sh", "application/x-sh"),
+    ]
+    for (extension, media) in types {
+        if string.ends_with(path, extension) {
+            return string.from(media)
+        }
+    }
+    string.from("application/octet-stream")
+}
+
+/// Whether text matches pattern, where each `*` matches any run of bytes, `/` included.
+pub fn glob(pattern: String, text: String) -> bool {
+    let p = string.as_bytes(pattern)
+    let t = string.as_bytes(text)
+    let mut pi: u64 = 0
+    let mut ti: u64 = 0
+    let mut star: Option[u64] = None
+    let mut mark: u64 = 0
+    while ti < list.len(t) {
+        if pi < list.len(p) && p[pi] == b'*' {
+            pi += 1
+            star = Some(pi)
+            mark = ti
+        } else if pi < list.len(p) && p[pi] == t[ti] {
+            pi += 1
+            ti += 1
+        } else if let Some(after) = star {
+            mark += 1
+            ti = mark
+            pi = after
+        } else {
+            return false
+        }
+    }
+    while pi < list.len(p) && p[pi] == b'*' {
+        pi += 1
+    }
+    pi == list.len(p)
+}
+
+/// Reads a `_headers` file: an unindented line starts a rule with its pattern, and each
+/// indented `Name: value` line below it adds a field. Blank lines and `#` comments are skipped.
+pub fn parse_rules(source: String) -> Result[List[Rule], String] {
+    let mut rules: List[Rule] = list.new()
+    let mut at: u64 = 0
+    let mut number: u64 = 0
+    while let Some((line, next)) = string.next_line(source, at) {
+        at = next
+        number += 1
+        let trimmed = string.trim_ascii(line)
+        if string.byte_len(trimmed) == 0 || string.starts_with(trimmed, "#") {
+            continue
+        }
+        let indented = string.starts_with(line, " ") || string.starts_with(line, "\t")
+        if !indented {
+            list.push(mut rules, Rule(pattern: string.from(trimmed), fields: list.new()))
+            continue
+        }
+        let n = list.len(rules)
+        let Some((name, value)) = string.split_once(trimmed, ":") else {
+            return Error(problem(number, "expected `Name: value`"))
+        }
+        if n == 0 {
+            return Error(problem(number, "a field before any path pattern"))
+        }
+        let added = Field(name: string.from(string.trim_ascii(name)), value: string.from(string.trim_ascii(value)))
+        list.push(mut rules[n - 1].fields, take added)
+    }
+    Ok(take rules)
+}
+
+fn problem(line: u64, what: String) -> String {
+    let mut message = string.from("_headers line ")
+    string.push_u64(mut message, line)
+    string.push(mut message, ": ")
+    string.push(mut message, what)
+    message
+}
+
+/// The fields the rules give url, in rule order. A later rule's field of the same name
+/// (compared without case) replaces an earlier one.
+pub fn declared(rules: List[Rule], url: String) -> List[Field] {
+    let mut out: List[Field] = list.new()
+    for rule in rules {
+        if !glob(rule.pattern, url) {
+            continue
+        }
+        for f in rule.fields {
+            let mut replaced = false
+            for i in 0u64 .. list.len(out) {
+                if string.eq_ignore_case(out[i].name, f.name) {
+                    out[i].value = string.from(f.value)
+                    replaced = true
+                }
+            }
+            if !replaced {
+                list.push(mut out, Field(name: string.from(f.name), value: string.from(f.value)))
+            }
+        }
+    }
+    take out
+}
+
+/// The value of the field named name (compared without case), if fields has one.
+pub fn field_value(list_of: List[Field], name: String) -> Option[View[String]] in list_of {
+    for f in list_of {
+        if string.eq_ignore_case(f.name, name) {
+            return Some(f.value)
+        }
+    }
+    None
+}
+
+/// Whether a decoded path segment may name a file: never `.` or `..`, and no NUL, `/` or `\`.
+fn safe(segment: String) -> bool {
+    if segment == "." || segment == ".." {
+        return false
+    }
+    for b in string.as_bytes(segment) {
+        if b == 0u8 || b == b'/' || b == b'\\' {
+            return false
+        }
+    }
+    true
+}
+
+/// Where the decoded segments of a request path lead. trailing is whether the raw path ends
+/// in `/`. An empty final segment is the trailing slash; any other empty segment is Missing.
+pub fn resolve(site: Site, segments: List[String], trailing: bool) -> Resolved {
+    let mut parts: List[String] = list.new()
+    let n = list.len(segments)
+    for i in 0u64 .. n {
+        let segment = segments[i]
+        if !safe(segment) {
+            return Refused
+        }
+        if string.byte_len(segment) == 0 {
+            if i + 1 == n {
+                continue
+            }
+            return Missing
+        }
+        list.push(mut parts, string.from(segment))
+    }
+    let key = string.join(parts, "/")
+    let count = list.len(parts)
+    if count == 0 || trailing {
+        let index = index_of(key)
+        return if map.contains(site.files, index) {
+            Serve(take index)
+        } else {
+            Missing
+        }
+    }
+    if parts[count - 1] == "index.html" {
+        if !map.contains(site.files, key) {
+            return Missing
+        }
+        let _ = list.pop(mut parts)
+        return Redirect(directory_url(string.join(parts, "/")))
+    }
+    if map.contains(site.files, key) {
+        return Serve(take key)
+    }
+    if map.contains(site.files, index_of(key)) {
+        return Redirect(directory_url(key))
+    }
+    Missing
+}
+
+fn index_of(directory: String) -> String {
+    let mut path = string.from(directory)
+    if string.byte_len(path) > 0 {
+        string.push(mut path, "/")
+    }
+    string.push(mut path, "index.html")
+    path
+}
+
+fn directory_url(directory: String) -> String {
+    let mut url = string.from("/")
+    if string.byte_len(directory) > 0 {
+        string.push(mut url, directory)
+        string.push(mut url, "/")
+    }
+    url
+}
+
+/// Reads every regular file below root into memory, and the rules from its `_headers`.
+/// A link is never followed, so a file outside root can never be served.
+pub fn load(root: Dir) -> Result[Site, String] waits {
+    let mut files: Map[String, Asset] = map.new()
+    let mut rules: List[Rule] = list.new()
+    let mut walker = std.dir.walk(root, None)
+    loop {
+        let entry = match std.dir.next(mut walker) {
+            Ok(Some(take entry)) => take entry,
+            Ok(None) => break,
+            Error(e) => return Error(failed("cannot list", e.path)),
+        }
+        match entry.kind {
+            File => {},
+            _ => continue,
+        }
+        let body = match std.file.read(root, entry.name) {
+            Ok(take body) => take body,
+            Error(_) => return Error(failed("cannot read", entry.name)),
+        }
+        if entry.name == HEADERS_FILE {
+            let source = match string.from_utf8(take body) {
+                Ok(take source) => take source,
+                Error(_) => return Error(failed("not UTF-8:", entry.name)),
+            }
+            rules = parse_rules(source)?
+            continue
+        }
+        let asset = Asset(body: arc.new(take body), media: media_type(entry.name))
+        map.insert(mut files, string.from(entry.name), take asset)
+    }
+    Ok(Site(files: take files, rules: take rules))
+}
+
+fn failed(what: String, path: String) -> String {
+    let mut message = string.from(what)
+    string.push(mut message, " ")
+    string.push(mut message, path)
+    message
+}
+
+/// The decoded URL path a request names, as `_headers` patterns see it: `/` and the
+/// segments joined by `/`, with the request's trailing slash kept.
+pub fn url_of(segments: List[String], trailing: bool) -> String {
+    let mut url = string.from("/")
+    string.push(mut url, string.join(segments, "/"))
+    if trailing && !string.ends_with(url, "/") {
+        string.push(mut url, "/")
+    }
+    url
+}
+
+fn set_field(mut reply: std.http.Response, name: String, value: String) -> Result[(), std.http.HandlerError] {
+    std.http.header(mut reply, std.http.copy_bytes(string.as_bytes(name)), std.http.copy_bytes(string.as_bytes(value)))
+}
+
+fn plain(status: u16, body: String) -> Result[std.http.Response, std.http.HandlerError] {
+    let mut reply = std.http.response(status, std.http.copy_bytes(string.as_bytes(body)), false)?
+    set_field(mut reply, "Content-Type", "text/plain; charset=utf-8")?
+    Ok(take reply)
+}
+
+/// Answers one GET (or HEAD, which the router serves from GET without the body).
+pub fn respond(req: std.http.Request, s: Site) -> Result[std.http.Response, std.http.HandlerError] {
+    let raw = std.http.path(req)
+    let trailing = list.len(raw) > 0 && raw[list.len(raw) - 1] == b'/'
+    let segments = std.http.segments(req)
+    let url = url_of(segments, trailing)
+    let found = declared(s.rules, url)
+    let mut reply = match resolve(s, segments, trailing) {
+        Serve(key) => {
+            let Some(asset) = map.get(s.files, key) else {
+                return plain(404, "404 not found\n")
+            }
+            let mut reply = std.http.response_shared(200, arc.share(asset.body), false)?
+            let media = match field_value(found, "Content-Type") {
+                Some(value) => string.from(value),
+                None => string.from(asset.media),
+            }
+            set_field(mut reply, "Content-Type", media)?
+            if field_value(found, "Cache-Control") == None {
+                set_field(mut reply, "Cache-Control", DEFAULT_CACHE)?
+            }
+            take reply
+        },
+        Redirect(location) => {
+            let mut target = string.from(location)
+            let query = std.http.query(req)
+            if list.len(query) > 0 {
+                string.push(mut target, "?")
+                match string.from_utf8(std.http.copy_bytes(query)) {
+                    Ok(q) => string.push(mut target, q),
+                    Error(_) => return plain(400, "400 bad request\n"),
+                }
+            }
+            let mut reply = std.http.response(307, list.new(), false)?
+            set_field(mut reply, "Location", target)?
+            take reply
+        },
+        Missing => plain(404, "404 not found\n")?,
+        Refused => plain(400, "400 bad request\n")?,
+    }
+    for f in found {
+        if !string.eq_ignore_case(f.name, "Content-Type") {
+            set_field(mut reply, f.name, f.value)?
+        }
+    }
+    Ok(take reply)
+}
+
+fn page(req: std.http.Request, scratch: Region, mut out: std.http.Responder, s: Site) -> Result[std.http.Outcome, std.http.HandlerError] {
+    Ok(Reply(respond(req, s)?))
+}
+
+fn health(req: std.http.Request, scratch: Region, mut out: std.http.Responder, s: Site) -> Result[std.http.Outcome, std.http.HandlerError] {
+    let mut reply = plain(200, "ok\n")?
+    set_field(mut reply, "Cache-Control", "no-store")?
+    Ok(Reply(take reply))
+}
+
+/// The route table: `/healthz` for the platform's health check, and every other path to the site.
+pub fn routes() -> Option[std.router.Router[Site]] {
+    let mut b: std.router.Builder[Site] = std.router.builder()
+    if let Error(_) = std.router.add(mut b, "GET", "/healthz", std.router.raw(health)) {
+        return None
+    }
+    if let Error(_) = std.router.add(mut b, "GET", "/", std.router.raw(page)) {
+        return None
+    }
+    if let Error(_) = std.router.add(mut b, "GET", "/{path...}", std.router.raw(page)) {
+        return None
+    }
+    match std.router.build(take b) {
+        Ok(take r) => Some(take r),
+        Error(_) => None,
+    }
+}

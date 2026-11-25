@@ -1,0 +1,111 @@
+// hirsel.ai: the built site under the granted Dir, served over HTTP/1.1 by std.http.
+// Settings come from the environment (each also a flag: PORT is --port):
+//   PORT                 the TCP port to listen on, on every IPv4 address (default 8080)
+//   BUCKET_NAME          a Tigris bucket the site may use for stored content (optional)
+//   AWS_ENDPOINT_URL_S3  that bucket's S3 endpoint (optional)
+// The static pages never touch the bucket. A SIGTERM or SIGINT stops admission and gives
+// open exchanges STOP_GRACE_MS to finish.
+
+const STOP_GRACE_MS: u64 = 5000u64
+
+const BACKLOG: u16 = 512u16
+
+/// Object storage the platform attached, when it attached one.
+pub type Storage = Tigris(String, String) | Unattached
+
+type Settings {
+    port: u16,
+    storage: Storage
+}
+
+fn settings(e: Env, a: Args) -> Result[Settings, String] {
+    let mut r = std.config.new(Some(e), a, 4)
+    let port = std.config.port_or(mut r, "PORT", 8080)
+    let bucket = std.config.string_or(mut r, "BUCKET_NAME", string.new())
+    let endpoint = std.config.string_or(mut r, "AWS_ENDPOINT_URL_S3", string.new())
+    match std.config.finish(take r) {
+        Ok(()) => {},
+        Error(errors) => return Error(std.config.format_errors(errors)),
+    }
+    let storage = if string.byte_len(bucket) > 0 && string.byte_len(endpoint) > 0 {
+        Tigris(take bucket, take endpoint)
+    } else {
+        Unattached
+    }
+    Ok(Settings(port: port, storage: take storage))
+}
+
+type StopWatch: send {
+    process: Process,
+    clock: Clock,
+    to: Sender[u64]
+}
+
+fn watch_stop(take w: StopWatch) waits {
+    let StopWatch(process: p, clock: c, to: take to) = take w
+    host.stopped(p)
+    let _ = channel.send(to, clock.deadline_after_ms(host.mono_ns(c), STOP_GRACE_MS))
+}
+
+fn say(errors: Stderr, line: String) waits {
+    let mut text = string.from("hirsel-site: ")
+    string.push(mut text, line)
+    string.push(mut text, "\n")
+    let _ = stderr.write(errors, text)
+}
+
+fn quit(errors: Stderr, line: String) -> Result[(), Exit] waits {
+    say(errors, line)
+    Error(Exit(status: 1u8))
+}
+
+pub fn main(n: Net, root: Dir, c: Clock, tasks: Tasks, e: Env, a: Args, process: Process, errors: Stderr) -> Result[(), Exit] waits {
+    let cfg = match settings(e, a) {
+        Ok(take cfg) => take cfg,
+        Error(problem) => return quit(errors, problem),
+    }
+    let loaded = match site.load(root) {
+        Ok(take loaded) => take loaded,
+        Error(problem) => return quit(errors, problem),
+    }
+    let Some(take routes) = site.routes() else {
+        return quit(errors, string.from("the route table did not build"))
+    }
+    let (take listener, addr) = match host.listen(n, Addr(ip: V4(0u32), port: cfg.port), BACKLOG) {
+        Ok(take pair) => take pair,
+        Error(_) => {
+            let mut line = string.from("cannot listen on port ")
+            string.push_u64(mut line, int.widen(cfg.port))
+            return quit(errors, line)
+        },
+    }
+    let mut line = string.from("serving ")
+    string.push_u64(mut line, map.len(loaded.files))
+    string.push(mut line, " files on 0.0.0.0:")
+    string.push_u64(mut line, int.widen(addr.port))
+    match cfg.storage {
+        Tigris(bucket, endpoint) => {
+            string.push(mut line, ", storage: Tigris bucket ")
+            string.push(mut line, bucket)
+            string.push(mut line, " at ")
+            string.push(mut line, endpoint)
+        },
+        Unattached => string.push(mut line, ", storage: none"),
+    }
+    say(errors, line)
+
+    let (take to, take from): (Sender[u64], Receiver[u64]) = channel.new(1u64)
+    let mut watcher = task.spawn(tasks, bytes 4096u64, StopWatch(process: process, clock: c, to: take to), watch_stop)
+    let mut listeners: List[Listener] = list.new()
+    list.push(mut listeners, take listener)
+    let served = std.http.serve_with_stop(take listeners, c, tasks, std.http.defaults(), take routes, take loaded, take from)
+    task.cancel(mut watcher)
+    let _ = task.join(take watcher)
+    match served {
+        Ok(()) => {
+            say(errors, string.from("stopped"))
+            Ok(())
+        },
+        Error(_) => quit(errors, string.from("the server failed")),
+    }
+}
