@@ -3,11 +3,19 @@
 The website of the [Hirsel](https://github.com/SamGalanakis/hirsel) programming language, and
 the Hirsel program that serves it. It runs on [Fly.io](https://fly.io).
 
+Hirsel installs on Linux x86_64 (glibc 2.28+) and on macOS 26+ on Apple Silicon:
+
+```sh
+curl -fsSL https://hirsel.ai/install.sh | sh
+```
+
+The toolchain is ad-hoc signed, not notarized; `curl | sh` installs it on macOS with no extra step.
+
 ## Layout
 
 | Path | What it is |
 | --- | --- |
-| `site/` | Hand-written pages and assets: the landing page, gallery, install script, fonts, `_headers` |
+| `site/` | Hand-written pages and assets: the landing page, gallery, fonts, `_headers` |
 | `tools/` | Python generators that turn a Hirsel checkout's docs into `/docs/`, `/docs/std/`, `/docs/spec/`, `primer.md`, `cookbook.md`, `api-index.md`, `llms.txt`, `llms-full.txt` and `sitemap.xml` |
 | `src/main.hirsel` | The server's entry: settings, listener, graceful stop |
 | `src/site.hirsel` | Loading the built site, clean-URL resolution, `_headers` rules, the route table |
@@ -21,9 +29,18 @@ The docs come from a checkout of `SamGalanakis/hirsel`, aligned to its newest `v
 
 ```sh
 pip install tree-sitter==0.25.2     # and a C compiler and Node.js (for esbuild)
-python3 tools/build_site.py --hirsel-repo ../hirsel --out _site
-HIRSEL_REPO=../hirsel python3 tools/site_check_links.py --site-dir _site --release-tag v0.2.0-pre
+mkdir -p /tmp/hirsel-installer && cd /tmp/hirsel-installer
+gh release download v0.3.0-pre --repo SamGalanakis/hirsel -p install.sh -p SHA256SUMS
+grep ' install\.sh$' SHA256SUMS | sha256sum -c --strict - && cd -
+python3 tools/build_site.py --hirsel-repo ../hirsel --installer /tmp/hirsel-installer/install.sh \
+    --release-tag v0.3.0-pre --out _site
+HIRSEL_REPO=../hirsel python3 tools/site_check_links.py --site-dir _site --release-tag v0.3.0-pre
 ```
+
+`/install.sh` has one source: the `install.sh` asset of the Hirsel release, checked against that
+release's `SHA256SUMS`. This repo keeps no copy of it. The build fails if the installer's platform
+arms differ from the platforms the site's copy names (`SUPPORTED_TARGETS` in
+`tools/build_site.py`); change that copy and the set together.
 
 `--release-tag TAG` picks another tag, and `--release-tag main` uses the checkout's working
 tree. `HIRSEL_REPO` can stand in for `--hirsel-repo`. A source check runs in the image build
@@ -68,11 +85,13 @@ PORT=8080 ./hirsel-site                      # serves ./_site
 A push to `main` runs `.github/workflows/deploy.yml`, which calls `flyctl deploy --remote-only`
 with the `FLY_API_TOKEN` secret. The image build:
 
-1. clones `SamGalanakis/hirsel` at `HIRSEL_REF` (default `v0.2.0-pre`);
-2. checks the source pages, builds `_site`, and checks its links;
-3. downloads the Hirsel release `HIRSEL_VERSION` and verifies its `SHA256SUMS`;
-4. runs the laws and builds the server;
-5. ships only the executable and `_site/` on `debian:bookworm-slim`.
+1. downloads the release's `install.sh` and `SHA256SUMS` from the Hirsel release `HIRSEL_VERSION`
+   (default `0.3.0-pre`) and fails unless `sha256sum -c` passes on `install.sh`;
+2. clones `SamGalanakis/hirsel` at `HIRSEL_REF` (default `v0.3.0-pre`);
+3. checks the source pages, builds `_site` with that installer as `/install.sh`, and checks its links;
+4. downloads the Linux x86_64 toolchain from the same release and verifies it against `SHA256SUMS`;
+5. runs the laws and builds the server;
+6. ships only the executable and `_site/` on `debian:bookworm-slim`.
 
 To build the image with a local toolchain instead of the release download:
 

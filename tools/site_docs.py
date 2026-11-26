@@ -581,6 +581,7 @@ def tooling_part_html(ref: str, parser, query) -> str:
     aarch64_cmd = card(
         [
             "hirsel build app --release --target aarch64-unknown-linux-gnu -o app-arm64",
+            "hirsel build app --release --target aarch64-apple-darwin -o app-mac",
             "hirsel test app --target aarch64-unknown-linux-gnu \\",
             "  --emulator qemu-aarch64 --sysroot /path/to/aarch64-sysroot",
         ],
@@ -594,7 +595,7 @@ def tooling_part_html(ref: str, parser, query) -> str:
                 4,
                 "tooling",
                 "Tooling",
-                "Built-in CLI tools for inspecting rules, sampling CPU and replay memory, recording and replaying runs, and cross-compiling for AArch64 Linux.",
+                "Built-in CLI tools for inspecting rules, sampling CPU and replay memory, recording and replaying runs, and cross-compiling for AArch64 Linux and Apple Silicon macOS.",
             ),
             heading("h2", "hirsel-explain", "<code>hirsel explain</code>"),
             "<p>When the compiler refuses code, it prints a short rule code (such as <code>OWN-7</code>). "
@@ -616,8 +617,10 @@ def tooling_part_html(ref: str, parser, query) -> str:
             f'Full format and verdict rules live in <a href="{html.escape(rec_url, quote=True)}">docs/recording.md</a>.</p>',
             replay_cmd,
             heading("h2", "aarch64-cross-compiling", "AArch64 cross-compiling"),
-            "<p>The installed toolchain ships the AArch64 Linux runtime archive and link kit alongside <code>x86_64</code>. "
-            "Pass <code>--target aarch64-unknown-linux-gnu</code> to <code>hirsel build</code> to emit a native AArch64 ELF binary; "
+            "<p>The installed toolchain ships the runtime archives and link kits for <code>x86_64-unknown-linux-gnu</code>, "
+            "<code>aarch64-unknown-linux-gnu</code> and <code>aarch64-apple-darwin</code>. "
+            "Pass <code>--target aarch64-unknown-linux-gnu</code> to <code>hirsel build</code> to emit a native AArch64 ELF binary, "
+            "or <code>--target aarch64-apple-darwin</code> for an Apple Silicon Mach-O binary; "
             "add <code>--emulator</code> and <code>--sysroot</code> when running or testing under QEMU. See "
             '<a href="/docs/spec/cli/">the CLI specification</a> for native build and target options.</p>',
             aarch64_cmd,
@@ -642,7 +645,7 @@ def part_open(no: int, pid: str, title: str, intro_html: str, banner_html: str =
 
 
 def install_part_html(install_sh: str, ref: str, parser, query) -> str:
-    tag_example = ref if ref != "main" else "v0.2.0-pre"
+    tag_example = ref if ref != "main" else "v0.3.0-pre"
     card = lambda lines, lang, label: render_code_card(lines, lang, parser, query, label)
     one_liner = card(["curl -fsSL https://hirsel.ai/install.sh | sh"], "sh", "install-one-liner")
     quickstart = card(
@@ -687,9 +690,11 @@ def install_part_html(install_sh: str, ref: str, parser, query) -> str:
             ),
             one_liner,
             '<div class="info-grid">'
-            '<div class="info-card"><h3>Supported today</h3><p>Linux <code>x86_64</code> with <code>glibc 2.28+</code>.</p></div>'
-            '<div class="info-card"><h3>In progress</h3><p>Apple Silicon macOS (<code>aarch64-apple-darwin</code>). '
+            '<div class="info-card"><h3>Linux</h3><p><code>x86_64</code> with <code>glibc 2.28+</code>. '
             "Linux on musl is not yet supported.</p></div>"
+            '<div class="info-card"><h3>macOS</h3><p>Apple Silicon (<code>aarch64-apple-darwin</code>), macOS 26 or later. '
+            "The toolchain is ad-hoc signed, not notarized; installing with <code>curl | sh</code> needs no extra step. "
+            "<code>hirsel prof</code> sampling is Linux-only for now.</p></div>"
             "</div>",
             heading("h2", "first-project", "Your first project"),
             "<p><code>hirsel new</code> scaffolds a package with <code>hirsel.toml</code>, "

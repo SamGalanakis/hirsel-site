@@ -521,7 +521,7 @@ const AGENT_TXT = [
   '- Specification reference: https://hirsel.ai/docs/spec/',
   '- Gallery: https://hirsel.ai/gallery/',
   '- Agent skill: https://github.com/SamGalanakis/hirsel/blob/main/skills/hirsel/SKILL.md',
-  '- Install (Linux x86_64, glibc 2.28+; Apple Silicon macOS in progress): curl -fsSL https://hirsel.ai/install.sh | sh',
+  '- Install (Linux x86_64 with glibc 2.28+, or macOS 26+ on Apple Silicon): curl -fsSL https://hirsel.ai/install.sh | sh',
 ].join('\\n');
 
 function writeClip(text, done) {

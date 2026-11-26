@@ -9,10 +9,24 @@
 #
 #   docker build --build-context hirsel-toolchain=$HOME/.hirsel/current -t hirsel-site .
 #
-# The docs come from SamGalanakis/hirsel at HIRSEL_REF, the same release by default.
+# The docs come from SamGalanakis/hirsel at HIRSEL_REF, the same release by default. The served
+# /install.sh is always that release's install.sh asset, checked against its SHA256SUMS.
 
-ARG HIRSEL_VERSION=0.2.0-pre
+ARG HIRSEL_VERSION=0.3.0-pre
 ARG HIRSEL_REF=v${HIRSEL_VERSION}
+
+# ---- The installer, from the same GitHub release ----------------------------------------
+FROM debian:bookworm-slim AS installer
+ARG HIRSEL_VERSION
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl \
+    && rm -rf /var/lib/apt/lists/*
+WORKDIR /installer
+RUN set -eu; \
+    base="https://github.com/SamGalanakis/hirsel/releases/download/v${HIRSEL_VERSION}"; \
+    curl --proto '=https' --tlsv1.2 --retry 3 -fsSLO "$base/SHA256SUMS"; \
+    curl --proto '=https' --tlsv1.2 --retry 3 -fsSLO "$base/install.sh"; \
+    grep ' install\.sh$' SHA256SUMS | sha256sum -c --strict -; \
+    sh -n install.sh
 
 # ---- The Hirsel toolchain, from its GitHub release -------------------------------------
 FROM debian:bookworm-slim AS toolchain-download
@@ -45,9 +59,10 @@ RUN git clone --quiet --depth 1 --branch "${HIRSEL_REF}" https://github.com/SamG
 WORKDIR /work
 COPY tools/ tools/
 COPY site/ site/
+COPY --from=installer /installer/install.sh /installer/install.sh
 ENV HIRSEL_REPO=/src/hirsel
 RUN python3 tools/site_highlight.py --check \
-    && python3 tools/build_site.py --release-tag "${HIRSEL_REF}" --out /out/_site \
+    && python3 tools/build_site.py --release-tag "${HIRSEL_REF}" --installer /installer/install.sh --out /out/_site \
     && python3 tools/site_check_links.py --site-dir /out/_site --release-tag "${HIRSEL_REF}"
 
 # ---- The server: laws, then a release build ---------------------------------------------

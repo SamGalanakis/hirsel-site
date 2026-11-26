@@ -55,7 +55,7 @@ def llms_header(ref: str) -> str:
 ## Quick start
 
 ```sh
-curl -fsSL https://hirsel.ai/install.sh | sh   # Linux x86_64 (glibc 2.28+); Apple Silicon macOS in progress
+curl -fsSL https://hirsel.ai/install.sh | sh   # Linux x86_64 (glibc 2.28+) or macOS 26+ on Apple Silicon
 hirsel new app && cd app
 hirsel check
 hirsel test
@@ -71,7 +71,7 @@ hirsel run
 - [Gallery](https://hirsel.ai/gallery/): systems built in Hirsel (Serve durable server platform, pure-Hirsel real-time media and WebRTC stack, and hirsel.ai)
 - [Full agent bundle (llms-full.txt)](https://hirsel.ai/llms-full.txt): single-file bundle containing intro, primer, cookbook, std API index, and agent skill
 - [Agent skill (SKILL.md)]({GITHUB}blob/{ref}/skills/hirsel/SKILL.md): iterative check/explain/inspect workflow for coding agents
-- [Install script](https://hirsel.ai/install.sh): Linux x86_64 release installer
+- [Install script](https://hirsel.ai/install.sh): release installer for Linux x86_64 and macOS on Apple Silicon
 """
 
 
