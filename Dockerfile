@@ -12,7 +12,7 @@
 # The docs come from SamGalanakis/hirsel at HIRSEL_REF, the same release by default. The served
 # /install.sh is always that release's install.sh asset, checked against its SHA256SUMS.
 
-ARG HIRSEL_VERSION=0.3.0-pre
+ARG HIRSEL_VERSION=0.3.3-pre
 ARG HIRSEL_REF=v${HIRSEL_VERSION}
 
 # ---- The installer, from the same GitHub release ----------------------------------------

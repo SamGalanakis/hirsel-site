@@ -30,11 +30,11 @@ The docs come from a checkout of `SamGalanakis/hirsel`, aligned to its newest `v
 ```sh
 pip install tree-sitter==0.25.2     # and a C compiler and Node.js (for esbuild)
 mkdir -p /tmp/hirsel-installer && cd /tmp/hirsel-installer
-gh release download v0.3.0-pre --repo SamGalanakis/hirsel -p install.sh -p SHA256SUMS
+gh release download v0.3.3-pre --repo SamGalanakis/hirsel -p install.sh -p SHA256SUMS
 grep ' install\.sh$' SHA256SUMS | sha256sum -c --strict - && cd -
 python3 tools/build_site.py --hirsel-repo ../hirsel --installer /tmp/hirsel-installer/install.sh \
-    --release-tag v0.3.0-pre --out _site
-HIRSEL_REPO=../hirsel python3 tools/site_check_links.py --site-dir _site --release-tag v0.3.0-pre
+    --release-tag v0.3.3-pre --out _site
+HIRSEL_REPO=../hirsel python3 tools/site_check_links.py --site-dir _site --release-tag v0.3.3-pre
 ```
 
 `/install.sh` has one source: the `install.sh` asset of the Hirsel release, checked against that
@@ -86,8 +86,8 @@ A push to `main` runs `.github/workflows/deploy.yml`, which calls `flyctl deploy
 with the `FLY_API_TOKEN` secret. The image build:
 
 1. downloads the release's `install.sh` and `SHA256SUMS` from the Hirsel release `HIRSEL_VERSION`
-   (default `0.3.0-pre`) and fails unless `sha256sum -c` passes on `install.sh`;
-2. clones `SamGalanakis/hirsel` at `HIRSEL_REF` (default `v0.3.0-pre`);
+   (default `0.3.3-pre`) and fails unless `sha256sum -c` passes on `install.sh`;
+2. clones `SamGalanakis/hirsel` at `HIRSEL_REF` (default `v0.3.3-pre`);
 3. checks the source pages, builds `_site` with that installer as `/install.sh`, and checks its links;
 4. downloads the Linux x86_64 toolchain from the same release and verifies it against `SHA256SUMS`;
 5. runs the laws and builds the server;
