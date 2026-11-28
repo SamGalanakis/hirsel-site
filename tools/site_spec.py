@@ -84,7 +84,7 @@ def rewrite_spec_href(url: str, ref: str, spec_files: set[str]) -> str:
     if "://" in url or url.startswith("#") or url.startswith("/"):
         # Also convert GitHub blob links to docs/spec/*.md into internal spec links.
         gh_spec = re.match(
-            r"^https://github\.com/SamGalanakis/hirsel/blob/[^/]+/docs/spec/([a-z0-9_-]+\.md)(#.*)?$",
+            r"^https://github\.com/hirsel-lang/hirsel/blob/[^/]+/docs/spec/([a-z0-9_-]+\.md)(#.*)?$",
             url,
         )
         if gh_spec and gh_spec.group(1) in spec_files:

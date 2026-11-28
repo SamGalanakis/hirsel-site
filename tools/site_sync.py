@@ -27,7 +27,7 @@ INDEX = ROOT / "core" / "std" / "API-INDEX.md"
 SKILL = ROOT / "skills" / "hirsel" / "SKILL.md"
 README = ROOT / "README.md"
 
-GITHUB = "https://github.com/SamGalanakis/hirsel/"
+GITHUB = "https://github.com/hirsel-lang/hirsel/"
 
 SITEMAP_ENTRIES = (
     ("https://hirsel.ai/", "weekly", "1.0"),

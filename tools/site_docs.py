@@ -102,7 +102,7 @@ def rewrite_human_href(url: str, ref: str, spec_files: set[str] | None = None) -
     if url in ("https://hirsel.ai/install.sh", "/install.sh"):
         return "/docs/#install"
     gh_spec = re.match(
-        r"^https://github\.com/SamGalanakis/hirsel/blob/[^/]+/docs/spec/([a-z0-9_-]+\.md)(#.*)?$",
+        r"^https://github\.com/hirsel-lang/hirsel/blob/[^/]+/docs/spec/([a-z0-9_-]+\.md)(#.*)?$",
         url,
     )
     if gh_spec:

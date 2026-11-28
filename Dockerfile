@@ -9,7 +9,7 @@
 #
 #   docker build --build-context hirsel-toolchain=$HOME/.hirsel/current -t hirsel-site .
 #
-# The docs come from SamGalanakis/hirsel at HIRSEL_REF, the same release by default. The served
+# The docs come from hirsel-lang/hirsel at HIRSEL_REF, the same release by default. The served
 # /install.sh is always that release's install.sh asset, checked against its SHA256SUMS.
 
 ARG HIRSEL_VERSION=0.3.3-pre
@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /installer
 RUN set -eu; \
-    base="https://github.com/SamGalanakis/hirsel/releases/download/v${HIRSEL_VERSION}"; \
+    base="https://github.com/hirsel-lang/hirsel/releases/download/v${HIRSEL_VERSION}"; \
     curl --proto '=https' --tlsv1.2 --retry 3 -fsSLO "$base/SHA256SUMS"; \
     curl --proto '=https' --tlsv1.2 --retry 3 -fsSLO "$base/install.sh"; \
     grep ' install\.sh$' SHA256SUMS | sha256sum -c --strict -; \
@@ -35,7 +35,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates
     && rm -rf /var/lib/apt/lists/*
 WORKDIR /download
 RUN set -eu; \
-    base="https://github.com/SamGalanakis/hirsel/releases/download/v${HIRSEL_VERSION}"; \
+    base="https://github.com/hirsel-lang/hirsel/releases/download/v${HIRSEL_VERSION}"; \
     archive="hirsel-v${HIRSEL_VERSION}-x86_64-unknown-linux-gnu.tar.gz"; \
     curl --proto '=https' --tlsv1.2 --retry 3 -fsSLO "$base/SHA256SUMS"; \
     curl --proto '=https' --tlsv1.2 --retry 3 -fsSLO "$base/$archive"; \
@@ -55,7 +55,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         ca-certificates git gcc libc6-dev python3 python3-pip \
     && rm -rf /var/lib/apt/lists/* \
     && pip3 install --break-system-packages --no-cache-dir 'tree-sitter==0.25.2'
-RUN git clone --quiet --depth 1 --branch "${HIRSEL_REF}" https://github.com/SamGalanakis/hirsel /src/hirsel
+RUN git clone --quiet --depth 1 --branch "${HIRSEL_REF}" https://github.com/hirsel-lang/hirsel /src/hirsel
 WORKDIR /work
 COPY tools/ tools/
 COPY site/ site/

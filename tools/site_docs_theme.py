@@ -11,7 +11,7 @@ import html
 import json
 
 ORIGIN = "https://hirsel.ai"
-GITHUB_REPO = "https://github.com/SamGalanakis/hirsel"
+GITHUB_REPO = "https://github.com/hirsel-lang/hirsel"
 
 AGENT_COMMENT = (
     "<!-- For coding agents: https://hirsel.ai/llms.txt | /llms-full.txt | "
@@ -520,7 +520,7 @@ const AGENT_TXT = [
   '- Standard library index: https://hirsel.ai/api-index.md',
   '- Specification reference: https://hirsel.ai/docs/spec/',
   '- Gallery: https://hirsel.ai/gallery/',
-  '- Agent skill: https://github.com/SamGalanakis/hirsel/blob/main/skills/hirsel/SKILL.md',
+  '- Agent skill: https://github.com/hirsel-lang/hirsel/blob/main/skills/hirsel/SKILL.md',
   '- Install (Linux x86_64 with glibc 2.28+, or macOS 26+ on Apple Silicon): curl -fsSL https://hirsel.ai/install.sh | sh',
 ].join('\\n');
 

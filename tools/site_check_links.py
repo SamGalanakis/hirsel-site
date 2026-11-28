@@ -2,7 +2,7 @@
 """Verify internal HTML links and release-tag GitHub links in a built site directory.
 
 Checks:
-1. Every `https://github.com/SamGalanakis/hirsel/(blob|tree)/<ref>/<path>` URL in
+1. Every `https://github.com/hirsel-lang/hirsel/(blob|tree)/<ref>/<path>` URL in
    `llms.txt` and `llms-full.txt` exists in git at `<ref>`.
 2. Every internal `href` in every `.html` file under `--site-dir` resolves to an
    existing file (or `<dir>/index.html`) inside `--site-dir`, and any `#fragment`
@@ -26,7 +26,7 @@ from site_paths import HIRSEL
 
 ROOT = HIRSEL
 GH_LINK_RE = re.compile(
-    r"https://github\.com/SamGalanakis/hirsel/(blob|tree)/([^/\s)\"'>]+)/([^\s)\"'>#]+)"
+    r"https://github\.com/hirsel-lang/hirsel/(blob|tree)/([^/\s)\"'>]+)/([^\s)\"'>#]+)"
 )
 # Interactive JS walk view hashes on site/index.html that are handled by script.
 INDEX_WALK_HASHES = {
